@@ -1,0 +1,10 @@
+## Interface: 70300
+## Title: Annene
+## Author: Urtgard
+## Version: @project-version@
+## X-Curse-Project-ID: 92404
+## X-WoWI-ID: 23879
+
+Annene.lua
+
+##SavedVariables: AnneneDB

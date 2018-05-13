@@ -1,0 +1,10 @@
+sudo: false
+language: c
+ 
+addons:
+  apt:
+    packages:
+    - pandoc
+ 
+script: curl -sO https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh
+after_script: bash release.sh -g 7.3.5
