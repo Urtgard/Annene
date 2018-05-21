@@ -1,49 +1,127 @@
-------------------
---Variables
-local x, xOld, y, yOld = 0, 0, 0, 0
-------------------
+Annene = LibStub("AceAddon-3.0"):NewAddon("Annene", "AceEvent-3.0")
+local A = Annene
 
-local Annene = CreateFrame("Frame")
-Annene:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
-Annene:RegisterEvent("PET_BATTLE_OPENING_START")
-Annene:RegisterEvent("ADDON_LOADED")
-Annene:RegisterEvent("PLAYER_LOGOUT")
+function A:OnEnable()
+	------------------
+	--	Database
+	------------------
+	self.defaults = {
+		global = {
+			x = 0,
+			y = -210,
+			scale = 1.0,
+			PetSelectionFrameOffset = 131,
+		}
+	}
+	self.db = LibStub("AceDB-3.0"):New("AnneneDB", self.defaults)
 
-function Annene:PET_BATTLE_OPENING_START()
-	self:PetBattleFrameSetStyle()
+	------------------
+	--	Events
+	------------------
+	self:RegisterEvent("PET_BATTLE_OPENING_START", "PetBattleFrameSetStyle")
+
+	------------------
+	-- 	Options
+	------------------
+	LibStub("AceConfig-3.0"):RegisterOptionsTable("Annene", self.options)
+	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Annene", "Annene")	
 end
 
-function Annene:ADDON_LOADED(name)
-	if name == "Annene" then
-		if AnneneDB == nil then
-			AnneneDB = {}
-		end
-
-		if AnneneDB.x then
-			x = AnneneDB.x
-			xOld = x
-		else
-			AnneneDB.x = 0
-		end
-
-		if AnneneDB.y then
-			y = AnneneDB.y
-			yOld = y
-		else
-			AnneneDB.y = 0
-		end
-
-		self.OptionsPanel.Option1.EditBox:SetText(x)
-		self.OptionsPanel.Option2.EditBox:SetText(y)
+------------------
+-- 	Options Table
+------------------
+local newOrder
+do
+	local current = 0
+	function newOrder()
+		current = current + 1
+		return current
 	end
 end
+A.options = {
+	type = "group",
 
-function Annene:PLAYER_LOGOUT()
-	AnneneDB.x = x
-	AnneneDB.y = y
-end
+	args = {
+		x = {
+			order = newOrder(),
+		    name = "x-offset",
+		    type = "range",
+		    softMin = -500,
+		    softMax = 500,
+		    step = 1,
+	   		set = function(info,val)
+	   			A.db.global.x = val
+	   			A:PetBattleFrameSetPosition(val, A.db.global.y)
+	   		end,
+	    	get = function() return A.db.global.x end
+		},
+		y = {
+			order = newOrder(),
+		    name = "y-offset",
+		    type = "range",
+		    softMin = -500,
+		    softMax = 500,
+		    step = 1,
+	   		set = function(info,val)
+	   			A.db.global.y = val
+	   			A:PetBattleFrameSetPosition(A.db.global.x, val)
+	   		end,
+	    	get = function() return A.db.global.y end
+		},
+		blankLine1 = {
+			type = "description",
+			order = newOrder(),
+			name = " ",
+		},
+		scale = {
+			order = newOrder(),
+		    name = "scale",
+		    type = "range",
+		    min = 0.1,
+		    softMin = .5,
+		    softMax = 2,
+		    step = .01,
+	   		set = function(info,val)
+	   			A.db.global.scale = val
+	   			PetBattleFrame:SetScale(val)
+	   		end,
+	    	get = function() return A.db.global.scale end
+		},
+		PetSelectionFrameOffset = {
+			order = newOrder(),
+			name = "PetSelectionFrame-offset",
+		    type = "range",
+		    softMin = -500,
+		    softMax = 500,
+		    step = 1,
+	   		set = function(info,val)
+	   			A.db.global.PetSelectionFrameOffset = val
+	   			PetBattleFrame.BottomFrame.PetSelectionFrame:SetPoint("BOTTOM", 0, val)
+	   		end,
+	    	get = function() return A.db.global.PetSelectionFrameOffset end
+		},
+		blankLine2 = {
+			type = "description",
+			order = newOrder(),
+			name = " ",
+		},
+		defaults = {
+			order = newOrder(),
+			name = "Restore default settings",
+			type = "execute",
+			func = function()
+				for k,v in pairs(A.defaults.global) do
+					A.db.global[k] = v
+				end
+				A:PetBattleFrameSetStyle()
+			end
+		},
+	}
+}
 
-function Annene:PetBattleFrameSetStyle()
+function A:PetBattleFrameSetStyle()
+	PetBattleFrame:SetScale(self.db.global.scale)
+
 	--rearrange buttons
 	PetBattleFrame.BottomFrame.abilityButtons[3]:ClearAllPoints()
 	PetBattleFrame.BottomFrame.abilityButtons[3]:SetPoint("TOPRIGHT", PetBattleFrame.BottomFrame, "TOP", -3, -30)
@@ -98,9 +176,9 @@ function Annene:PetBattleFrameSetStyle()
 
 	PetBattleFrame.BottomFrame.TurnTimer:SetPoint("TOP", 0, 24)
 	
-	PetBattleFrame.BottomFrame.PetSelectionFrame:SetPoint("BOTTOM", 0, 131)
+	PetBattleFrame.BottomFrame.PetSelectionFrame:SetPoint("BOTTOM", 0, self.db.global.PetSelectionFrameOffset)
 
-	self:PetBattleFrameSetPosition(x, y)
+	self:PetBattleFrameSetPosition(self.db.global.x, self.db.global.y)
 	PetBattleFrame.TopVersus:Hide()
 
 	PetBattleFrame.TopArtLeft:ClearAllPoints()
@@ -217,92 +295,13 @@ function Annene:PetBattleFrameSetStyle()
 	PetBattleFrame.BottomFrame.TurnTimer.TimerBG:SetTexture(texture)
 end
 
-function Annene:PetBattleFrameSetPosition(x, y)
-	PetBattleFrame.TopVersus:SetPoint("TOP","UIParent", "CENTER", 0+x, -210+y)
+A.anchor = CreateFrame("Frame", "AnnAnchor", UIParent)
+local anchor = A.anchor
+anchor:SetWidth(2)
+anchor:SetHeight(2)
+anchor:SetPoint("CENTER", "UIParent", "CENTER")
+PetBattleFrame.TopVersus:SetPoint("TOP", anchor, "CENTER")
+
+function A:PetBattleFrameSetPosition(x, y)
+	self.anchor:SetPoint("CENTER", "UIParent", "CENTER", x, y)
 end
-
---Options 
-Annene.OptionsPanel = CreateFrame("Frame", "AnneneOptions", UIParent)
-local f = Annene.OptionsPanel
-f:Hide()
-f.name = "Annene"
-f.okay = function()
-	x = f.Option1.EditBox:GetText()
-	xOld = x
-	y = f.Option2.EditBox:GetText()
-	yOld = y
-end
-f.cancel = function()
-	x, y = xOld, yOld
-	f.Option1.EditBox:SetText(x)
-	f.Option2.EditBox:SetText(y)
-	Annene:PetBattleFrameSetPosition(x, y)
-end
--- Add the panel to the Interface Options
-InterfaceOptions_AddCategory(Annene.OptionsPanel)
-
-
-f.title = f:CreateFontString("Title")
-f.title:SetFontObject("GameFontNormalLarge")
-f.title:SetText("Annene Options")
-f.title:SetPoint("TOPLEFT",15,-15)
-
---x value
---Description
-f.Option1 = {}
-f.Option1.Descr = f:CreateFontString("Option1Descr")
-f.Option1.Descr:SetFontObject("GameFontWhite")
-f.Option1.Descr:SetText("Set the x offset")
-f.Option1.Descr:SetPoint("TOPLEFT", f.title, "BOTTOMLEFT", 5, -15)
---Edit Box
-f.Option1.EditBox = CreateFrame("EditBox", "Option1EditBox", f, "InputBoxTemplate")
-f.Option1.EditBox:SetPoint("LEFT", f.Option1.Descr, "RIGHT", 10, 1)
-f.Option1.EditBox:SetWidth(30)
-f.Option1.EditBox:SetHeight(16)
-f.Option1.EditBox:SetAutoFocus(false)
-f.Option1.EditBox:SetScript("OnEditFocusGained", function(self) self.Button:Enable() end)
-f.Option1.EditBox:SetScript("OnEditFocusLost", function(self) self.Button:Disable() end)
-f.Option1.EditBox:SetMaxLetters(5)
---Button
-f.Option1.EditBox.Button = CreateFrame("Button", "Option1Button", f, "UIPanelButtonTemplate")
-f.Option1.EditBox.Button:SetPoint("LEFT", f.Option1.EditBox, "RIGHT", 3, 0)
-f.Option1.EditBox.Button:SetWidth(32)
-f.Option1.EditBox.Button:SetHeight(21)
-f.Option1.EditBox.Button:SetText("OK")
-f.Option1.EditBox.Button:Disable()
-f.Option1.EditBox.Button:SetScript("OnClick", function(self, button)
-	if button == "LeftButton" then
-		f.Option1.EditBox:ClearFocus()
-		f.Option1.EditBox:SetText(tonumber(f.Option1.EditBox:GetText()))
-		Annene:PetBattleFrameSetPosition(f.Option1.EditBox:GetText(), f.Option2.EditBox:GetText())
-	end end)
-
---y value
---Description
-f.Option2 = {}
-f.Option2.Descr = f:CreateFontString("Option2Descr")
-f.Option2.Descr:SetFontObject("GameFontWhite")
-f.Option2.Descr:SetText("Set the y offset")
-f.Option2.Descr:SetPoint("TOPLEFT", f.Option1.Descr, "BOTTOMLEFT", 0, -12)
---Edit Box
-f.Option2.EditBox = CreateFrame("EditBox", "Option2EditBox", f, "InputBoxTemplate")
-f.Option2.EditBox:SetPoint("LEFT", f.Option2.Descr, "RIGHT", 10, 1)
-f.Option2.EditBox:SetWidth(30)
-f.Option2.EditBox:SetHeight(16)
-f.Option2.EditBox:SetAutoFocus(false)
-f.Option2.EditBox:SetScript("OnEditFocusGained", function(self) self.Button:Enable() end)
-f.Option2.EditBox:SetScript("OnEditFocusLost", function(self) self.Button:Disable() end)
-f.Option2.EditBox:SetMaxLetters(5)
---Button
-f.Option2.EditBox.Button = CreateFrame("Button", "Option2Button", f, "UIPanelButtonTemplate")
-f.Option2.EditBox.Button:SetPoint("LEFT", f.Option2.EditBox, "RIGHT", 3, 0)
-f.Option2.EditBox.Button:SetWidth(32)
-f.Option2.EditBox.Button:SetHeight(21)
-f.Option2.EditBox.Button:SetText("OK")
-f.Option2.EditBox.Button:Disable()
-f.Option2.EditBox.Button:SetScript("OnClick", function(self, button)
-	if button == "LeftButton" then
-		f.Option2.EditBox:ClearFocus()
-		f.Option2.EditBox:SetText(tonumber(f.Option2.EditBox:GetText()))
-		Annene:PetBattleFrameSetPosition(f.Option1.EditBox:GetText(), f.Option2.EditBox:GetText())
-	end end)
