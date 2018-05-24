@@ -4,7 +4,7 @@
 ## Version: @project-version@
 ## X-Curse-Project-ID: 92404
 ## X-WoWI-ID: 23879
-##SavedVariables: AnneneDB
+## SavedVariables: AnneneDB
 
 embeds.xml
 Annene.lua
