@@ -1,7 +1,7 @@
 Annene = LibStub("AceAddon-3.0"):NewAddon("Annene", "AceEvent-3.0")
 local A = Annene
 
-function A:OnEnable()
+function A:OnInitialize()
 	------------------
 	--	Database
 	------------------
@@ -14,7 +14,9 @@ function A:OnEnable()
 		}
 	}
 	self.db = LibStub("AceDB-3.0"):New("AnneneDB", self.defaults)
+end
 
+function A:OnEnable()
 	------------------
 	--	Events
 	------------------
@@ -24,7 +26,17 @@ function A:OnEnable()
 	-- 	Options
 	------------------
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("Annene", self.options)
-	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Annene", "Annene")	
+	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Annene", "Annene")
+
+	-----------------
+	--	Frames
+	-----------------
+	A.anchor = CreateFrame("Frame", "AnneneAnchor", UIParent)
+	local anchor = A.anchor
+	anchor:SetWidth(2)
+	anchor:SetHeight(2)
+	anchor:SetPoint("CENTER", "UIParent", "CENTER")
+	PetBattleFrame.TopVersus:SetPoint("TOP", anchor, "CENTER")
 end
 
 ------------------
@@ -265,23 +277,7 @@ function A:PetBattleFrameSetStyle()
 	 	end
 	end)
 
-	--PetTracker
-	if PetTrackerEnemyActions then
-		PetTrackerEnemyActions:SetPoint("BOTTOM", PetBattleFrame.TopVersus, "TOP", 0, 9)
-		PetTrackerEnemyActions:SetScale(0.7)
-	end
-
-	if tdBattlePetScriptAutoButton then
-		tdBattlePetScriptAutoButton:SetWidth(60)
-		if(C_PetBattles.IsPlayerNPC(LE_BATTLE_PET_ENEMY)) then
-        	PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetPoint("CENTER", -30, 0);
-    	end
-    	local _,_,ArtFrame2 = PetBattleFrame.BottomFrame.TurnTimer:GetChildren()
-    	ArtFrame2:Hide()
-	end
-
 	local texture = "Interface\\Addons\\Annene\\texture.BLP"
-
 	PetBattleFrame.TopArtLeft:SetTexture(texture)
 	PetBattleFrame.TopArtRight:SetTexture(texture)
 	PetBattleFrame.BottomFrame.LeftEndCap:SetTexture(texture)
@@ -293,14 +289,44 @@ function A:PetBattleFrameSetStyle()
 	PetBattleFrame.BottomFrame.CatchButton.SelectedHighlight:SetTexture(texture)
 	PetBattleFrame.BottomFrame.ForfeitButton.SelectedHighlight:SetTexture(texture)
 	PetBattleFrame.BottomFrame.TurnTimer.TimerBG:SetTexture(texture)
-end
 
-A.anchor = CreateFrame("Frame", "AnnAnchor", UIParent)
-local anchor = A.anchor
-anchor:SetWidth(2)
-anchor:SetHeight(2)
-anchor:SetPoint("CENTER", "UIParent", "CENTER")
-PetBattleFrame.TopVersus:SetPoint("TOP", anchor, "CENTER")
+	-----------------
+	--	Other Addons
+	-----------------
+	-- ElvUI
+	if ElvUI then
+		local E = unpack(ElvUI)
+		if E.private.skins.blizzard.petbattleui then
+			E.PopupDialogs["Annene"] = {
+				text = "You have got ElvUI's pet battle skin and Annene both enabled at the same time.\n\nSelect a skin to disable.\n",
+				OnAccept = function() E.private.skins.blizzard.petbattleui = false; ReloadUI() end,
+				OnCancel = function() DisableAddOn("Annene"); ReloadUI() end,
+				button1 = 'ElvUI\'s skin',
+				button2 = 'Annene',				
+				timeout = 0,
+				whileDead = 1,
+				hideOnEscape = false,
+			}
+			E:StaticPopup_Show("Annene")
+		end
+	end
+
+	-- PetTracker
+	if PetTrackerEnemyActions then
+		PetTrackerEnemyActions:SetPoint("BOTTOM", PetBattleFrame.TopVersus, "TOP", 0, 9)
+		PetTrackerEnemyActions:SetScale(0.7)
+	end
+
+	-- tdBattlePetScript
+	if tdBattlePetScriptAutoButton then
+		tdBattlePetScriptAutoButton:SetWidth(60)
+		if(C_PetBattles.IsPlayerNPC(LE_BATTLE_PET_ENEMY)) then
+        	PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetPoint("CENTER", -30, 0);
+    	end
+    	local _,_,ArtFrame2 = PetBattleFrame.BottomFrame.TurnTimer:GetChildren()
+    	ArtFrame2:Hide()
+	end
+end
 
 function A:PetBattleFrameSetPosition(x, y)
 	self.anchor:SetPoint("CENTER", "UIParent", "CENTER", x, y)
