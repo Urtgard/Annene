@@ -11,6 +11,14 @@ function A:OnInitialize()
 			y = -210,
 			scale = 1.0,
 			PetSelectionFrameOffset = 131,
+			DerangementPetBattleCooldowns = {
+				Ally1 = {show = false, x = 0, y = 0},
+				Ally2 = {show = true, x = 0, y = 0},
+				Ally3 = {show = true, x = 0, y = 0},
+				Enemy1 = {show = true, x = 0, y = 0},
+				Enemy2 = {show = true, x = 0, y = 0},
+				Enemy3 = {show = true, x = 0, y = 0},
+			}
 		}
 	}
 	self.db = LibStub("AceDB-3.0"):New("AnneneDB", self.defaults)
@@ -25,6 +33,7 @@ function A:OnEnable()
 	------------------
 	-- 	Options
 	------------------
+	self:BuildOptionsTable()
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("Annene", self.options)
 	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Annene", "Annene")
 
@@ -42,96 +51,160 @@ end
 ------------------
 -- 	Options Table
 ------------------
-local newOrder
-do
-	local current = 0
-	function newOrder()
-		current = current + 1
-		return current
+function A:BuildOptionsTable()
+	local newOrder
+	do
+		local current = 0
+		function newOrder()
+			current = current + 1
+			return current
+		end
+	end
+	self.options = {
+		type = "group",
+		args = {
+			x = {
+				order = newOrder(),
+			    name = "x-offset",
+			    type = "range",
+			    softMin = -500,
+			    softMax = 500,
+			    step = 1,
+		   		set = function(info,val)
+		   			A.db.global.x = val
+		   			A:PetBattleFrameSetPosition(val, A.db.global.y)
+		   		end,
+		    	get = function() return A.db.global.x end
+			},
+			y = {
+				order = newOrder(),
+			    name = "y-offset",
+			    type = "range",
+			    softMin = -500,
+			    softMax = 500,
+			    step = 1,
+		   		set = function(info,val)
+		   			A.db.global.y = val
+		   			A:PetBattleFrameSetPosition(A.db.global.x, val)
+		   		end,
+		    	get = function() return A.db.global.y end
+			},
+			blankLine1 = {
+				type = "description",
+				order = newOrder(),
+				name = " ",
+			},
+			scale = {
+				order = newOrder(),
+			    name = "scale",
+			    type = "range",
+			    min = 0.1,
+			    softMin = .5,
+			    softMax = 2,
+			    step = .01,
+		   		set = function(info,val)
+		   			A.db.global.scale = val
+		   			PetBattleFrame:SetScale(val)
+		   		end,
+		    	get = function() return A.db.global.scale end
+			},
+			PetSelectionFrameOffset = {
+				order = newOrder(),
+				name = "PetSelectionFrame-offset",
+			    type = "range",
+			    softMin = -500,
+			    softMax = 500,
+			    step = 1,
+		   		set = function(info,val)
+		   			A.db.global.PetSelectionFrameOffset = val
+		   			PetBattleFrame.BottomFrame.PetSelectionFrame:SetPoint("BOTTOM", 0, val)
+		   		end,
+		    	get = function() return A.db.global.PetSelectionFrameOffset end
+			},
+			blankLine2 = {
+				type = "description",
+				order = newOrder(),
+				name = " ",
+			},
+			blankLine3 = {
+				type = "description",
+				order = -2,
+				name = " ",
+			},
+			defaults = {
+				order = -1,
+				name = "Restore default settings",
+				type = "execute",
+				func = function()
+					Annene.db:ResetDB()
+					A:PetBattleFrameSetStyle()
+				end
+			},
+		}
+	}
+	-- Derangement's Pet Battle Cooldowns
+	self.options.args["header1"] = { type = "header", name = "Derangement's Pet Battle Cooldowns", order = newOrder(), }
+	for _,v in pairs({"Ally", "Enemy"}) do
+		for i=1,3 do
+			self.options.args[v..i.."desc"] = {
+				type = "description",
+				name = v..i..":",
+				fontSize = "medium",
+				width = .3,
+				order = newOrder()
+			}
+			self.options.args[v..i.."show"] = {
+				type = "toggle",
+				name = "Show",
+				width = .3,
+				set = function(info,val)
+					A.db.global.DerangementPetBattleCooldowns[v..i].show = val
+					A:PetBattleFrameSetStyle()
+				end,
+				descStyle = "inline",
+				get = function()
+					return A.db.global.DerangementPetBattleCooldowns[v..i].show
+				end,
+				order = newOrder()	
+			}
+			self.options.args[v..i.."x"] = {
+				order = newOrder(),
+			    name = "x-offset",
+			    type = "range",
+			    softMin = -50,
+			    softMax = 50,
+			    step = 1,
+		   		set = function(info,val)
+		   			A.db.global.DerangementPetBattleCooldowns[v..i].x = val
+		   			A:PetBattleFrameSetStyle()
+		   		end,
+		    	get = function() return A.db.global.DerangementPetBattleCooldowns[v..i].x end
+			}
+			self.options.args[v..i.."y"] = {
+				order = newOrder(),
+			    name = "y-offset",
+			    type = "range",
+			    softMin = -50,
+			    softMax = 50,
+			    step = 1,
+		   		set = function(info,val)
+		   			A.db.global.DerangementPetBattleCooldowns[v..i].y = val
+		   			A:PetBattleFrameSetStyle()
+		   		end,
+		    	get = function() return A.db.global.DerangementPetBattleCooldowns[v..i].y end
+	    	}
+	    	self.options.args[v..i.."space"] = {
+				type = "description",
+				name = " ",
+				width = .9,
+				order = newOrder()
+			}
+	    end
 	end
 end
-A.options = {
-	type = "group",
-
-	args = {
-		x = {
-			order = newOrder(),
-		    name = "x-offset",
-		    type = "range",
-		    softMin = -500,
-		    softMax = 500,
-		    step = 1,
-	   		set = function(info,val)
-	   			A.db.global.x = val
-	   			A:PetBattleFrameSetPosition(val, A.db.global.y)
-	   		end,
-	    	get = function() return A.db.global.x end
-		},
-		y = {
-			order = newOrder(),
-		    name = "y-offset",
-		    type = "range",
-		    softMin = -500,
-		    softMax = 500,
-		    step = 1,
-	   		set = function(info,val)
-	   			A.db.global.y = val
-	   			A:PetBattleFrameSetPosition(A.db.global.x, val)
-	   		end,
-	    	get = function() return A.db.global.y end
-		},
-		blankLine1 = {
-			type = "description",
-			order = newOrder(),
-			name = " ",
-		},
-		scale = {
-			order = newOrder(),
-		    name = "scale",
-		    type = "range",
-		    min = 0.1,
-		    softMin = .5,
-		    softMax = 2,
-		    step = .01,
-	   		set = function(info,val)
-	   			A.db.global.scale = val
-	   			PetBattleFrame:SetScale(val)
-	   		end,
-	    	get = function() return A.db.global.scale end
-		},
-		PetSelectionFrameOffset = {
-			order = newOrder(),
-			name = "PetSelectionFrame-offset",
-		    type = "range",
-		    softMin = -500,
-		    softMax = 500,
-		    step = 1,
-	   		set = function(info,val)
-	   			A.db.global.PetSelectionFrameOffset = val
-	   			PetBattleFrame.BottomFrame.PetSelectionFrame:SetPoint("BOTTOM", 0, val)
-	   		end,
-	    	get = function() return A.db.global.PetSelectionFrameOffset end
-		},
-		blankLine2 = {
-			type = "description",
-			order = newOrder(),
-			name = " ",
-		},
-		defaults = {
-			order = newOrder(),
-			name = "Restore default settings",
-			type = "execute",
-			func = function()
-				for k,v in pairs(A.defaults.global) do
-					A.db.global[k] = v
-				end
-				A:PetBattleFrameSetStyle()
-			end
-		},
-	}
-}
 
 function A:PetBattleFrameSetStyle()
+	if C_PetBattles.IsInBattle() == false then return end
 	PetBattleFrame:SetScale(self.db.global.scale)
 
 	--rearrange buttons
@@ -321,10 +394,45 @@ function A:PetBattleFrameSetStyle()
 	if tdBattlePetScriptAutoButton then
 		tdBattlePetScriptAutoButton:SetWidth(60)
 		if(C_PetBattles.IsPlayerNPC(LE_BATTLE_PET_ENEMY)) then
-        	PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetPoint("CENTER", -30, 0);
+        	PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetPoint("CENTER", -30, 0)
     	end
     	local _,_,ArtFrame2 = PetBattleFrame.BottomFrame.TurnTimer:GetChildren()
     	ArtFrame2:Hide()
+	end
+
+	-- Derangement's Pet Battle Cooldowns
+	-- Ally1
+	if self.db.global.DerangementPetBattleCooldowns.Ally1.show == true then
+		DeePetBattleFrame.Ally1:Show()
+		DeePetBattleFrame.Ally1:SetPoint("TOPLEFT", PetBattleFrame.ActiveAlly, "TOPRIGHT", self.db.global.DerangementPetBattleCooldowns.Ally1.x, self.db.global.DerangementPetBattleCooldowns.Ally1.y)
+	else
+		DeePetBattleFrame.Ally1:Hide()
+	end
+	-- Ally2 & Ally3
+	for i=2,C_PetBattles.GetNumPets(1) do
+		if self.db.global.DerangementPetBattleCooldowns["Ally"..i].show == true then
+			DeePetBattleFrame["Ally"..i]:Show()
+			DeePetBattleFrame["Ally"..i]:SetPoint("RIGHT", PetBattleFrame["Ally"..i], "LEFT", -9 + self.db.global.DerangementPetBattleCooldowns["Ally"..i].x, self.db.global.DerangementPetBattleCooldowns["Ally"..i].y)
+		else
+			DeePetBattleFrame["Ally"..i]:Hide()
+		end
+	end
+	-- Enemy1
+	if self.db.global.DerangementPetBattleCooldowns.Enemy1.show == true then
+		DeePetBattleFrame.Enemy1:Show()
+		DeePetBattleFrame.Enemy1:ClearAllPoints()
+		DeePetBattleFrame.Enemy1:SetPoint("BOTTOM", self.anchor, "TOP", self.db.global.DerangementPetBattleCooldowns.Enemy1.x, 2 + self.db.global.DerangementPetBattleCooldowns.Enemy1.y)
+	else
+		DeePetBattleFrame.Enemy1:Hide()
+	end
+	-- Enemy2 & Enemy3
+	for i=2,C_PetBattles.GetNumPets(2) do
+		if self.db.global.DerangementPetBattleCooldowns["Enemy"..i].show == true then
+			DeePetBattleFrame["Enemy"..i]:Show()
+			DeePetBattleFrame["Enemy"..i]:SetPoint("LEFT", PetBattleFrame["Enemy"..i], "RIGHT", 9 + self.db.global.DerangementPetBattleCooldowns["Enemy"..i].x, self.db.global.DerangementPetBattleCooldowns["Enemy"..i].y)
+		else
+			DeePetBattleFrame["Enemy"..i]:Hide()
+		end
 	end
 end
 
