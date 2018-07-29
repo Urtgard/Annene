@@ -401,37 +401,39 @@ function A:PetBattleFrameSetStyle()
 	end
 
 	-- Derangement's Pet Battle Cooldowns
-	-- Ally1
-	if self.db.global.DerangementPetBattleCooldowns.Ally1.show == true then
-		DeePetBattleFrame.Ally1:Show()
-		DeePetBattleFrame.Ally1:SetPoint("TOPLEFT", PetBattleFrame.ActiveAlly, "TOPRIGHT", self.db.global.DerangementPetBattleCooldowns.Ally1.x, self.db.global.DerangementPetBattleCooldowns.Ally1.y)
-	else
-		DeePetBattleFrame.Ally1:Hide()
-	end
-	-- Ally2 & Ally3
-	for i=2,C_PetBattles.GetNumPets(1) do
-		if self.db.global.DerangementPetBattleCooldowns["Ally"..i].show == true then
-			DeePetBattleFrame["Ally"..i]:Show()
-			DeePetBattleFrame["Ally"..i]:SetPoint("RIGHT", PetBattleFrame["Ally"..i], "LEFT", -9 + self.db.global.DerangementPetBattleCooldowns["Ally"..i].x, self.db.global.DerangementPetBattleCooldowns["Ally"..i].y)
+	if DeePetBattleFrame then
+		-- Ally1
+		if self.db.global.DerangementPetBattleCooldowns.Ally1.show == true then
+			DeePetBattleFrame.Ally1:Show()
+			DeePetBattleFrame.Ally1:SetPoint("TOPLEFT", PetBattleFrame.ActiveAlly, "TOPRIGHT", self.db.global.DerangementPetBattleCooldowns.Ally1.x, self.db.global.DerangementPetBattleCooldowns.Ally1.y)
 		else
-			DeePetBattleFrame["Ally"..i]:Hide()
+			DeePetBattleFrame.Ally1:Hide()
 		end
-	end
-	-- Enemy1
-	if self.db.global.DerangementPetBattleCooldowns.Enemy1.show == true then
-		DeePetBattleFrame.Enemy1:Show()
-		DeePetBattleFrame.Enemy1:ClearAllPoints()
-		DeePetBattleFrame.Enemy1:SetPoint("BOTTOM", self.anchor, "TOP", self.db.global.DerangementPetBattleCooldowns.Enemy1.x, 2 + self.db.global.DerangementPetBattleCooldowns.Enemy1.y)
-	else
-		DeePetBattleFrame.Enemy1:Hide()
-	end
-	-- Enemy2 & Enemy3
-	for i=2,C_PetBattles.GetNumPets(2) do
-		if self.db.global.DerangementPetBattleCooldowns["Enemy"..i].show == true then
-			DeePetBattleFrame["Enemy"..i]:Show()
-			DeePetBattleFrame["Enemy"..i]:SetPoint("LEFT", PetBattleFrame["Enemy"..i], "RIGHT", 9 + self.db.global.DerangementPetBattleCooldowns["Enemy"..i].x, self.db.global.DerangementPetBattleCooldowns["Enemy"..i].y)
+		-- Ally2 & Ally3
+		for i=2,C_PetBattles.GetNumPets(1) do
+			if self.db.global.DerangementPetBattleCooldowns["Ally"..i].show == true then
+				DeePetBattleFrame["Ally"..i]:Show()
+				DeePetBattleFrame["Ally"..i]:SetPoint("RIGHT", PetBattleFrame["Ally"..i], "LEFT", -9 + self.db.global.DerangementPetBattleCooldowns["Ally"..i].x, self.db.global.DerangementPetBattleCooldowns["Ally"..i].y)
+			else
+				DeePetBattleFrame["Ally"..i]:Hide()
+			end
+		end
+		-- Enemy1
+		if self.db.global.DerangementPetBattleCooldowns.Enemy1.show == true then
+			DeePetBattleFrame.Enemy1:Show()
+			DeePetBattleFrame.Enemy1:ClearAllPoints()
+			DeePetBattleFrame.Enemy1:SetPoint("BOTTOM", self.anchor, "TOP", self.db.global.DerangementPetBattleCooldowns.Enemy1.x, 2 + self.db.global.DerangementPetBattleCooldowns.Enemy1.y)
 		else
-			DeePetBattleFrame["Enemy"..i]:Hide()
+			DeePetBattleFrame.Enemy1:Hide()
+		end
+		-- Enemy2 & Enemy3
+		for i=2,C_PetBattles.GetNumPets(2) do
+			if self.db.global.DerangementPetBattleCooldowns["Enemy"..i].show == true then
+				DeePetBattleFrame["Enemy"..i]:Show()
+				DeePetBattleFrame["Enemy"..i]:SetPoint("LEFT", PetBattleFrame["Enemy"..i], "RIGHT", 9 + self.db.global.DerangementPetBattleCooldowns["Enemy"..i].x, self.db.global.DerangementPetBattleCooldowns["Enemy"..i].y)
+			else
+				DeePetBattleFrame["Enemy"..i]:Hide()
+			end
 		end
 	end
 end
