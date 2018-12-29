@@ -413,13 +413,14 @@ function A:PetBattleFrameSetStyle()
 		for i=2,C_PetBattles.GetNumPets(1) do
 			if self.db.global.DerangementPetBattleCooldowns["Ally"..i].show == true then
 				DeePetBattleFrame["Ally"..i]:Show()
-				DeePetBattleFrame["Ally"..i]:SetPoint("RIGHT", PetBattleFrame["Ally"..i], "LEFT", -9 + self.db.global.DerangementPetBattleCooldowns["Ally"..i].x, self.db.global.DerangementPetBattleCooldowns["Ally"..i].y)
+				DeePetBattleFrame["Ally"..i]:SetPoint("RIGHT", PetBattleFrame["Ally"..i], "LEFT", -10 + self.db.global.DerangementPetBattleCooldowns["Ally"..i].x, self.db.global.DerangementPetBattleCooldowns["Ally"..i].y)
 			else
 				DeePetBattleFrame["Ally"..i]:Hide()
 			end
 		end
 		-- Enemy1
 		if self.db.global.DerangementPetBattleCooldowns.Enemy1.show == true then
+			DeePetBattleFrame.Enemy1:SetFrameStrata("BACKGROUND")
 			DeePetBattleFrame.Enemy1:Show()
 			DeePetBattleFrame.Enemy1:ClearAllPoints()
 			DeePetBattleFrame.Enemy1:SetPoint("BOTTOM", self.anchor, "TOP", self.db.global.DerangementPetBattleCooldowns.Enemy1.x, 2 + self.db.global.DerangementPetBattleCooldowns.Enemy1.y)
@@ -430,7 +431,7 @@ function A:PetBattleFrameSetStyle()
 		for i=2,C_PetBattles.GetNumPets(2) do
 			if self.db.global.DerangementPetBattleCooldowns["Enemy"..i].show == true then
 				DeePetBattleFrame["Enemy"..i]:Show()
-				DeePetBattleFrame["Enemy"..i]:SetPoint("LEFT", PetBattleFrame["Enemy"..i], "RIGHT", 9 + self.db.global.DerangementPetBattleCooldowns["Enemy"..i].x, self.db.global.DerangementPetBattleCooldowns["Enemy"..i].y)
+				DeePetBattleFrame["Enemy"..i]:SetPoint("LEFT", PetBattleFrame["Enemy"..i], "RIGHT", 10 + self.db.global.DerangementPetBattleCooldowns["Enemy"..i].x, self.db.global.DerangementPetBattleCooldowns["Enemy"..i].y)
 			else
 				DeePetBattleFrame["Enemy"..i]:Hide()
 			end
