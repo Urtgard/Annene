@@ -10,6 +10,7 @@ function A:OnInitialize()
 			x = 0,
 			y = -210,
 			scale = 1.0,
+			anchor = false,
 			PetSelectionFrameOffset = 131,
 			DerangementPetBattleCooldowns = {
 				Ally1 = {show = false, x = 0, y = 0},
@@ -46,6 +47,61 @@ function A:OnEnable()
 	anchor:SetHeight(2)
 	anchor:SetPoint("CENTER", "UIParent", "CENTER")
 	PetBattleFrame.TopVersus:SetPoint("TOP", anchor, "CENTER")
+
+	A.tooltipAnchor = CreateFrame("Frame", "AnneneTooltipAnchor", UIParent)
+	A.tooltipAnchor:SetWidth(1)
+	A.tooltipAnchor:SetHeight(1)
+	A.tooltipAnchor:SetPoint("CENTER", "UIParent", "BOTTOMRIGHT", -6, 6)
+
+	hooksecurefunc("PetBattleAbilityTooltip_Show", function()
+		if A.db.global.anchor then
+			PetBattlePrimaryAbilityTooltip:ClearAllPoints()
+			PetBattlePrimaryAbilityTooltip:SetPoint("BOTTOMRIGHT", A.tooltipAnchor, "CENTER", 0, 0)
+		end
+	end)
+	
+	hooksecurefunc("PetBattleUnitTooltip_Attach", function(self)
+		if A.db.global.anchor then
+			self:ClearAllPoints()
+			self:SetPoint("BOTTOMRIGHT", A.tooltipAnchor, "CENTER", 0, 0)
+		end
+	end)
+	
+	PetBattleFrame.BottomFrame.SwitchPetButton:SetScript("OnEnter", function(self)
+		if A.db.global.anchor then
+			GameTooltip:SetOwner(A.tooltipAnchor, "ANCHOR_LEFT")
+		else
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		end
+		GameTooltip:SetText(PET_BATTLE_FORFEIT, 1, 1, 1, true)
+		GameTooltip:AddLine(PET_BATTLE_FORFEIT_DESCRIPTION, nil, nil, nil, true)
+		GameTooltip:Show()
+	end)
+	
+	PetBattleFrame.BottomFrame.CatchButton:SetScript("OnEnter", function(self)
+		if A.db.global.anchor then
+			GameTooltip:SetOwner(A.tooltipAnchor, "ANCHOR_LEFT")
+		else
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		end
+		GameTooltip:SetText(self.name, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true)
+		GameTooltip:AddLine(self.description, nil, nil, nil, true)
+		if self.additionalText then
+		  GameTooltip:AddLine(self.additionalText, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, true)
+		end
+		GameTooltip:Show()
+	end)
+	
+	PetBattleFrame.BottomFrame.ForfeitButton:SetScript("OnEnter", function(self)
+		if A.db.global.anchor then
+			GameTooltip:SetOwner(A.tooltipAnchor, "ANCHOR_LEFT")
+		else
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		end
+		GameTooltip:SetText(PET_BATTLE_FORFEIT, 1, 1, 1, true)
+		GameTooltip:AddLine(PET_BATTLE_FORFEIT_DESCRIPTION, nil, nil, nil, true)
+		GameTooltip:Show()
+	end)
 end
 
 ------------------
@@ -125,6 +181,19 @@ function A:BuildOptionsTable()
 				type = "description",
 				order = newOrder(),
 				name = " ",
+			},
+			anchor = {
+				type = "toggle",
+				name = "Anchor tooltips to bottom right",
+				set = function(info,val)
+					A.db.global.anchor = val
+					A:PetBattleFrameSetStyle()
+				end,
+				descStyle = "inline",
+				get = function()
+					return A.db.global.anchor
+				end,
+				order = newOrder()	
 			},
 			blankLine3 = {
 				type = "description",
