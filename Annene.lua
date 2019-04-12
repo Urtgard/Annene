@@ -55,6 +55,7 @@ function A:OnEnable()
 
 	hooksecurefunc("PetBattleAbilityTooltip_Show", function()
 		if A.db.global.anchor then
+			GameTooltip:Hide()
 			PetBattlePrimaryAbilityTooltip:ClearAllPoints()
 			PetBattlePrimaryAbilityTooltip:SetPoint("BOTTOMRIGHT", A.tooltipAnchor, "CENTER", 0, 0)
 		end
@@ -62,6 +63,7 @@ function A:OnEnable()
 	
 	hooksecurefunc("PetBattleUnitTooltip_Attach", function(self)
 		if A.db.global.anchor then
+			GameTooltip:Hide()
 			self:ClearAllPoints()
 			self:SetPoint("BOTTOMRIGHT", A.tooltipAnchor, "CENTER", 0, 0)
 		end
@@ -69,6 +71,7 @@ function A:OnEnable()
 	
 	PetBattleFrame.BottomFrame.SwitchPetButton:SetScript("OnEnter", function(self)
 		if A.db.global.anchor then
+			GameTooltip:Hide()
 			GameTooltip:SetOwner(A.tooltipAnchor, "ANCHOR_LEFT")
 		else
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -80,6 +83,7 @@ function A:OnEnable()
 	
 	PetBattleFrame.BottomFrame.CatchButton:SetScript("OnEnter", function(self)
 		if A.db.global.anchor then
+			GameTooltip:Hide()
 			GameTooltip:SetOwner(A.tooltipAnchor, "ANCHOR_LEFT")
 		else
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -94,6 +98,7 @@ function A:OnEnable()
 	
 	PetBattleFrame.BottomFrame.ForfeitButton:SetScript("OnEnter", function(self)
 		if A.db.global.anchor then
+			GameTooltip:Hide()
 			GameTooltip:SetOwner(A.tooltipAnchor, "ANCHOR_LEFT")
 		else
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
