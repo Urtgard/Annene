@@ -12,6 +12,7 @@ function A:OnInitialize()
 			scale = 1.0,
 			anchor = false,
 			PetSelectionFrameOffset = 131,
+			PetTracker = true,
 			DerangementPetBattleCooldowns = {
 				Ally1 = {show = false, x = 0, y = 0},
 				Ally2 = {show = true, x = 0, y = 0},
@@ -197,6 +198,19 @@ function A:BuildOptionsTable()
 				descStyle = "inline",
 				get = function()
 					return A.db.global.anchor
+				end,
+				order = newOrder()	
+			},
+			PetTracker = {
+				type = "toggle",
+				name = "PetTracker",
+				set = function(info,val)
+					A.db.global.PetTracker = val
+					A:PetBattleFrameSetStyle()
+				end,
+				descStyle = "inline",
+				get = function()
+					return A.db.global.PetTracker
 				end,
 				order = newOrder()	
 			},
@@ -460,8 +474,13 @@ function A:PetBattleFrameSetStyle()
 
 	-- PetTracker
 	if PetTrackerEnemyActions then
-		PetTrackerEnemyActions:SetPoint("BOTTOM", PetBattleFrame.TopVersus, "TOP", 0, 9)
-		PetTrackerEnemyActions:SetScale(0.7)
+		PetTrackerEnemyActions:ClearAllPoints()
+		if self.db.global.PetTracker then
+			PetTrackerEnemyActions:SetPoint("BOTTOM", PetBattleFrame.TopVersus, "TOP", 0, 9)
+			PetTrackerEnemyActions:SetScale(0.7)
+		else
+			PetTrackerEnemyActions:SetPoint("BOTTOM", "UIParent", "TOP", 0, 9)
+		end
 	end
 
 	-- tdBattlePetScript
@@ -487,7 +506,7 @@ function A:PetBattleFrameSetStyle()
 		for i=2,C_PetBattles.GetNumPets(1) do
 			if self.db.global.DerangementPetBattleCooldowns["Ally"..i].show == true then
 				DeePetBattleFrame["Ally"..i]:Show()
-				DeePetBattleFrame["Ally"..i]:SetPoint("RIGHT", PetBattleFrame["Ally"..i], "LEFT", -10 + self.db.global.DerangementPetBattleCooldowns["Ally"..i].x, self.db.global.DerangementPetBattleCooldowns["Ally"..i].y)
+				DeePetBattleFrame["Ally"..i]:SetPoint("RIGHT", PetBattleFrame["Ally"..i], "LEFT", -12 + self.db.global.DerangementPetBattleCooldowns["Ally"..i].x, self.db.global.DerangementPetBattleCooldowns["Ally"..i].y)
 			else
 				DeePetBattleFrame["Ally"..i]:Hide()
 			end
@@ -497,7 +516,7 @@ function A:PetBattleFrameSetStyle()
 			DeePetBattleFrame.Enemy1:SetFrameStrata("BACKGROUND")
 			DeePetBattleFrame.Enemy1:Show()
 			DeePetBattleFrame.Enemy1:ClearAllPoints()
-			DeePetBattleFrame.Enemy1:SetPoint("BOTTOM", self.anchor, "TOP", self.db.global.DerangementPetBattleCooldowns.Enemy1.x, 2 + self.db.global.DerangementPetBattleCooldowns.Enemy1.y)
+			DeePetBattleFrame.Enemy1:SetPoint("BOTTOM", self.anchor, "TOP", self.db.global.DerangementPetBattleCooldowns.Enemy1.x, 4 + self.db.global.DerangementPetBattleCooldowns.Enemy1.y)
 		else
 			DeePetBattleFrame.Enemy1:Hide()
 		end
@@ -505,7 +524,7 @@ function A:PetBattleFrameSetStyle()
 		for i=2,C_PetBattles.GetNumPets(2) do
 			if self.db.global.DerangementPetBattleCooldowns["Enemy"..i].show == true then
 				DeePetBattleFrame["Enemy"..i]:Show()
-				DeePetBattleFrame["Enemy"..i]:SetPoint("LEFT", PetBattleFrame["Enemy"..i], "RIGHT", 10 + self.db.global.DerangementPetBattleCooldowns["Enemy"..i].x, self.db.global.DerangementPetBattleCooldowns["Enemy"..i].y)
+				DeePetBattleFrame["Enemy"..i]:SetPoint("LEFT", PetBattleFrame["Enemy"..i], "RIGHT", 12 + self.db.global.DerangementPetBattleCooldowns["Enemy"..i].x, self.db.global.DerangementPetBattleCooldowns["Enemy"..i].y)
 			else
 				DeePetBattleFrame["Enemy"..i]:Hide()
 			end
