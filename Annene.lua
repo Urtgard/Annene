@@ -77,8 +77,8 @@ function A:OnEnable()
 		else
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		end
-		GameTooltip:SetText(PET_BATTLE_FORFEIT, 1, 1, 1, true)
-		GameTooltip:AddLine(PET_BATTLE_FORFEIT_DESCRIPTION, nil, nil, nil, true)
+		GameTooltip:SetText(SWITCH_PET, 1, 1, 1, true)
+		GameTooltip:AddLine(SWITCH_PET_DESCRIPTION, nil, nil, nil, true)
 		GameTooltip:Show()
 	end)
 	
@@ -459,9 +459,9 @@ function A:PetBattleFrameSetStyle()
 		local E = unpack(ElvUI)
 		if E.private.skins.blizzard.petbattleui then
 			E.PopupDialogs["Annene"] = {
-				text = "You have got ElvUI's pet battle skin and Annene both enabled at the same time.\n\nSelect a skin to disable.\n",
-				OnAccept = function() E.private.skins.blizzard.petbattleui = false; ReloadUI() end,
-				OnCancel = function() DisableAddOn("Annene"); ReloadUI() end,
+				text = "You have got ElvUI's pet battle skin and Annene both enabled at the same time.\n\nSelect which skin you want to use.\n",
+				OnAccept = function() DisableAddOn("Annene"); ReloadUI() end,
+				OnCancel = function() E.private.skins.blizzard.petbattleui = false; ReloadUI() end,
 				button1 = 'ElvUI\'s skin',
 				button2 = 'Annene',				
 				timeout = 0,
