@@ -31,6 +31,7 @@ function A:OnEnable()
 	--	Events
 	------------------
 	self:RegisterEvent("PET_BATTLE_OPENING_START", "PetBattleFrameSetStyle")
+	self:RegisterEvent("ADDON_LOADED", "AddonLoaded")
 
 	------------------
 	-- 	Options
@@ -44,10 +45,10 @@ function A:OnEnable()
 	-----------------
 	A.anchor = CreateFrame("Frame", "AnneneAnchor", UIParent)
 	local anchor = A.anchor
-	anchor:SetWidth(2)
+	anchor:SetWidth(156)
 	anchor:SetHeight(2)
 	anchor:SetPoint("CENTER", "UIParent", "CENTER")
-	PetBattleFrame.TopVersus:SetPoint("TOP", anchor, "CENTER")
+--	PetBattleFrame.TopVersus:SetPoint("TOP", anchor, "CENTER")
 
 	A.tooltipAnchor = CreateFrame("Frame", "AnneneTooltipAnchor", UIParent)
 	A.tooltipAnchor:SetWidth(1)
@@ -203,7 +204,7 @@ function A:BuildOptionsTable()
 			},
 			PetTracker = {
 				type = "toggle",
-				name = "PetTracker",
+				name = "PetTracker Enemybar",
 				set = function(info,val)
 					A.db.global.PetTracker = val
 					A:PetBattleFrameSetStyle()
@@ -327,7 +328,6 @@ function A:PetBattleFrameSetStyle()
 	PetBattleFrame.BottomFrame.MicroButtonFrame:Hide()
 	PetBattleFrame.BottomFrame.FlowFrame:Hide()
 	PetBattleFrame.BottomFrame.Delimiter:Hide()
-	PetBattleFrame.TopVersusText:Hide()
 	PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:Hide()
 	PetBattleFrameXPBar:Hide()
 	PetBattleFrameXPBar.Show = function() end
@@ -339,7 +339,7 @@ function A:PetBattleFrameSetStyle()
 	
 	--move and resize
 	PetBattleFrame.BottomFrame:ClearAllPoints()
-	PetBattleFrame.BottomFrame:SetPoint("TOP", PetBattleFrame.TopVersus, "BOTTOM", 0, 35)
+	PetBattleFrame.BottomFrame:SetPoint("TOP", self.anchor, "BOTTOM", 0, -29)
 	
 	PetBattleFrame.BottomFrame.LeftEndCap:ClearAllPoints()
 	PetBattleFrame.BottomFrame.LeftEndCap:SetPoint("LEFT", 80, -10)
@@ -352,12 +352,11 @@ function A:PetBattleFrameSetStyle()
 	PetBattleFrame.BottomFrame.PetSelectionFrame:SetPoint("BOTTOM", 0, self.db.global.PetSelectionFrameOffset)
 
 	self:PetBattleFrameSetPosition(self.db.global.x, self.db.global.y)
-	PetBattleFrame.TopVersus:Hide()
 
 	PetBattleFrame.TopArtLeft:ClearAllPoints()
-	PetBattleFrame.TopArtLeft:SetPoint("TOPRIGHT", PetBattleFrame.TopVersus, "TOP", 0, 0)
+	PetBattleFrame.TopArtLeft:SetPoint("TOPRIGHT", self.anchor, "TOP", 0, -1)
 	PetBattleFrame.TopArtRight:ClearAllPoints()
-	PetBattleFrame.TopArtRight:SetPoint("TOPLEFT", PetBattleFrame.TopVersus, "TOP", 0, 0)
+	PetBattleFrame.TopArtRight:SetPoint("TOPLEFT", self.anchor, "TOP", 0, -1)
 
 	PetBattleFrame.WeatherFrame:ClearAllPoints()
 	PetBattleFrame.WeatherFrame:SetPoint("TOP", PetBattleFrame.BottomFrame, "BOTTOM", 0, -20)
@@ -473,13 +472,14 @@ function A:PetBattleFrameSetStyle()
 	end
 
 	-- PetTracker
-	if PetTrackerEnemyActions then
-		PetTrackerEnemyActions:ClearAllPoints()
+	if PetTracker and PetTracker.EnemyBar then
+		PetTracker.EnemyBar:ClearAllPoints()
 		if self.db.global.PetTracker then
-			PetTrackerEnemyActions:SetPoint("BOTTOM", PetBattleFrame.TopVersus, "TOP", 0, 9)
-			PetTrackerEnemyActions:SetScale(0.7)
+			PetTracker.EnemyBar:Show()
+			PetTracker.EnemyBar:SetPoint("BOTTOM", self.anchor, "TOP", 0, 6)
+			PetTracker.EnemyBar:SetScale(0.67)
 		else
-			PetTrackerEnemyActions:SetPoint("BOTTOM", "UIParent", "TOP", 0, 9)
+			PetTracker.EnemyBar:Hide()
 		end
 	end
 
@@ -530,8 +530,24 @@ function A:PetBattleFrameSetStyle()
 			end
 		end
 	end
+
+	-- Battle Pet Battle Stats
+	if IsAddOnLoaded("BattlePetBattleStats") then
+		PetBattleFrame.TopVersus:Show()
+		PetBattleFrame.TopVersusText:Show()
+	else
+		PetBattleFrame.TopVersus:Hide()
+		PetBattleFrame.TopVersusText:Hide()
+	end
 end
 
 function A:PetBattleFrameSetPosition(x, y)
 	self.anchor:SetPoint("CENTER", "UIParent", "CENTER", x, y)
+end
+
+function A:AddonLoaded(_, addonName)
+	if addonName == "PetTracker_Battle" then
+		self:PetBattleFrameSetStyle()
+		self:UnregisterEvent("ADDON_LOADED")
+	end
 end
