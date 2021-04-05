@@ -19,7 +19,7 @@ function A:OnInitialize()
 				Ally3 = {show = true, x = 0, y = 0},
 				Enemy1 = {show = true, x = 0, y = 0},
 				Enemy2 = {show = true, x = 0, y = 0},
-				Enemy3 = {show = true, x = 0, y = 0},
+				Enemy3 = {show = true, x = 0, y = 0}
 			}
 		}
 	}
@@ -48,67 +48,82 @@ function A:OnEnable()
 	anchor:SetWidth(156)
 	anchor:SetHeight(2)
 	anchor:SetPoint("CENTER", "UIParent", "CENTER")
---	PetBattleFrame.TopVersus:SetPoint("TOP", anchor, "CENTER")
+	--	PetBattleFrame.TopVersus:SetPoint("TOP", anchor, "CENTER")
 
 	A.tooltipAnchor = CreateFrame("Frame", "AnneneTooltipAnchor", UIParent)
 	A.tooltipAnchor:SetWidth(1)
 	A.tooltipAnchor:SetHeight(1)
 	A.tooltipAnchor:SetPoint("CENTER", "UIParent", "BOTTOMRIGHT", -6, 6)
 
-	hooksecurefunc("PetBattleAbilityTooltip_Show", function()
-		if A.db.global.anchor then
-			GameTooltip:Hide()
-			PetBattlePrimaryAbilityTooltip:ClearAllPoints()
-			PetBattlePrimaryAbilityTooltip:SetPoint("BOTTOMRIGHT", A.tooltipAnchor, "CENTER", 0, 0)
+	hooksecurefunc(
+		"PetBattleAbilityTooltip_Show",
+		function()
+			if A.db.global.anchor then
+				GameTooltip:Hide()
+				PetBattlePrimaryAbilityTooltip:ClearAllPoints()
+				PetBattlePrimaryAbilityTooltip:SetPoint("BOTTOMRIGHT", A.tooltipAnchor, "CENTER", 0, 0)
+			end
 		end
-	end)
-	
-	hooksecurefunc("PetBattleUnitTooltip_Attach", function(self)
-		if A.db.global.anchor then
-			GameTooltip:Hide()
-			self:ClearAllPoints()
-			self:SetPoint("BOTTOMRIGHT", A.tooltipAnchor, "CENTER", 0, 0)
+	)
+
+	hooksecurefunc(
+		"PetBattleUnitTooltip_Attach",
+		function(self)
+			if A.db.global.anchor then
+				GameTooltip:Hide()
+				self:ClearAllPoints()
+				self:SetPoint("BOTTOMRIGHT", A.tooltipAnchor, "CENTER", 0, 0)
+			end
 		end
-	end)
-	
-	PetBattleFrame.BottomFrame.SwitchPetButton:SetScript("OnEnter", function(self)
-		if A.db.global.anchor then
-			GameTooltip:Hide()
-			GameTooltip:SetOwner(A.tooltipAnchor, "ANCHOR_LEFT")
-		else
-			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+	)
+
+	PetBattleFrame.BottomFrame.SwitchPetButton:SetScript(
+		"OnEnter",
+		function(self)
+			if A.db.global.anchor then
+				GameTooltip:Hide()
+				GameTooltip:SetOwner(A.tooltipAnchor, "ANCHOR_LEFT")
+			else
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+			end
+			GameTooltip:SetText(SWITCH_PET, 1, 1, 1, true)
+			GameTooltip:AddLine(SWITCH_PET_DESCRIPTION, nil, nil, nil, true)
+			GameTooltip:Show()
 		end
-		GameTooltip:SetText(SWITCH_PET, 1, 1, 1, true)
-		GameTooltip:AddLine(SWITCH_PET_DESCRIPTION, nil, nil, nil, true)
-		GameTooltip:Show()
-	end)
-	
-	PetBattleFrame.BottomFrame.CatchButton:SetScript("OnEnter", function(self)
-		if A.db.global.anchor then
-			GameTooltip:Hide()
-			GameTooltip:SetOwner(A.tooltipAnchor, "ANCHOR_LEFT")
-		else
-			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+	)
+
+	PetBattleFrame.BottomFrame.CatchButton:SetScript(
+		"OnEnter",
+		function(self)
+			if A.db.global.anchor then
+				GameTooltip:Hide()
+				GameTooltip:SetOwner(A.tooltipAnchor, "ANCHOR_LEFT")
+			else
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+			end
+			GameTooltip:SetText(self.name, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true)
+			GameTooltip:AddLine(self.description, nil, nil, nil, true)
+			if self.additionalText then
+				GameTooltip:AddLine(self.additionalText, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, true)
+			end
+			GameTooltip:Show()
 		end
-		GameTooltip:SetText(self.name, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true)
-		GameTooltip:AddLine(self.description, nil, nil, nil, true)
-		if self.additionalText then
-		  GameTooltip:AddLine(self.additionalText, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, true)
+	)
+
+	PetBattleFrame.BottomFrame.ForfeitButton:SetScript(
+		"OnEnter",
+		function(self)
+			if A.db.global.anchor then
+				GameTooltip:Hide()
+				GameTooltip:SetOwner(A.tooltipAnchor, "ANCHOR_LEFT")
+			else
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+			end
+			GameTooltip:SetText(PET_BATTLE_FORFEIT, 1, 1, 1, true)
+			GameTooltip:AddLine(PET_BATTLE_FORFEIT_DESCRIPTION, nil, nil, nil, true)
+			GameTooltip:Show()
 		end
-		GameTooltip:Show()
-	end)
-	
-	PetBattleFrame.BottomFrame.ForfeitButton:SetScript("OnEnter", function(self)
-		if A.db.global.anchor then
-			GameTooltip:Hide()
-			GameTooltip:SetOwner(A.tooltipAnchor, "ANCHOR_LEFT")
-		else
-			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		end
-		GameTooltip:SetText(PET_BATTLE_FORFEIT, 1, 1, 1, true)
-		GameTooltip:AddLine(PET_BATTLE_FORFEIT_DESCRIPTION, nil, nil, nil, true)
-		GameTooltip:Show()
-	end)
+	)
 end
 
 ------------------
@@ -128,71 +143,79 @@ function A:BuildOptionsTable()
 		args = {
 			x = {
 				order = newOrder(),
-			    name = "x-offset",
-			    type = "range",
-			    softMin = -500,
-			    softMax = 500,
-			    step = 1,
-		   		set = function(info,val)
-		   			A.db.global.x = val
-		   			A:PetBattleFrameSetPosition(val, A.db.global.y)
-		   		end,
-		    	get = function() return A.db.global.x end
+				name = "x-offset",
+				type = "range",
+				softMin = -500,
+				softMax = 500,
+				step = 1,
+				set = function(info, val)
+					A.db.global.x = val
+					A:PetBattleFrameSetPosition(val, A.db.global.y)
+				end,
+				get = function()
+					return A.db.global.x
+				end
 			},
 			y = {
 				order = newOrder(),
-			    name = "y-offset",
-			    type = "range",
-			    softMin = -500,
-			    softMax = 500,
-			    step = 1,
-		   		set = function(info,val)
-		   			A.db.global.y = val
-		   			A:PetBattleFrameSetPosition(A.db.global.x, val)
-		   		end,
-		    	get = function() return A.db.global.y end
+				name = "y-offset",
+				type = "range",
+				softMin = -500,
+				softMax = 500,
+				step = 1,
+				set = function(info, val)
+					A.db.global.y = val
+					A:PetBattleFrameSetPosition(A.db.global.x, val)
+				end,
+				get = function()
+					return A.db.global.y
+				end
 			},
 			blankLine1 = {
 				type = "description",
 				order = newOrder(),
-				name = " ",
+				name = " "
 			},
 			scale = {
 				order = newOrder(),
-			    name = "scale",
-			    type = "range",
-			    min = 0.1,
-			    softMin = .5,
-			    softMax = 2,
-			    step = .01,
-		   		set = function(info,val)
-		   			A.db.global.scale = val
-		   			PetBattleFrame:SetScale(val)
-		   		end,
-		    	get = function() return A.db.global.scale end
+				name = "scale",
+				type = "range",
+				min = 0.1,
+				softMin = .5,
+				softMax = 2,
+				step = .01,
+				set = function(info, val)
+					A.db.global.scale = val
+					PetBattleFrame:SetScale(val)
+				end,
+				get = function()
+					return A.db.global.scale
+				end
 			},
 			PetSelectionFrameOffset = {
 				order = newOrder(),
 				name = "PetSelectionFrame-offset",
-			    type = "range",
-			    softMin = -500,
-			    softMax = 500,
-			    step = 1,
-		   		set = function(info,val)
-		   			A.db.global.PetSelectionFrameOffset = val
-		   			PetBattleFrame.BottomFrame.PetSelectionFrame:SetPoint("BOTTOM", 0, val)
-		   		end,
-		    	get = function() return A.db.global.PetSelectionFrameOffset end
+				type = "range",
+				softMin = -500,
+				softMax = 500,
+				step = 1,
+				set = function(info, val)
+					A.db.global.PetSelectionFrameOffset = val
+					PetBattleFrame.BottomFrame.PetSelectionFrame:SetPoint("BOTTOM", 0, val)
+				end,
+				get = function()
+					return A.db.global.PetSelectionFrameOffset
+				end
 			},
 			blankLine2 = {
 				type = "description",
 				order = newOrder(),
-				name = " ",
+				name = " "
 			},
 			anchor = {
 				type = "toggle",
 				name = "Anchor tooltips to bottom right",
-				set = function(info,val)
+				set = function(info, val)
 					A.db.global.anchor = val
 					A:PetBattleFrameSetStyle()
 				end,
@@ -200,12 +223,12 @@ function A:BuildOptionsTable()
 				get = function()
 					return A.db.global.anchor
 				end,
-				order = newOrder()	
+				order = newOrder()
 			},
 			PetTracker = {
 				type = "toggle",
 				name = "PetTracker Enemybar",
-				set = function(info,val)
+				set = function(info, val)
 					A.db.global.PetTracker = val
 					A:PetBattleFrameSetStyle()
 				end,
@@ -213,12 +236,12 @@ function A:BuildOptionsTable()
 				get = function()
 					return A.db.global.PetTracker
 				end,
-				order = newOrder()	
+				order = newOrder()
 			},
 			blankLine3 = {
 				type = "description",
 				order = -2,
-				name = " ",
+				name = " "
 			},
 			defaults = {
 				order = -1,
@@ -228,85 +251,115 @@ function A:BuildOptionsTable()
 					Annene.db:ResetDB()
 					A:PetBattleFrameSetStyle()
 				end
-			},
+			}
 		}
 	}
 	-- Derangement's Pet Battle Cooldowns
-	self.options.args["header1"] = { type = "header", name = "Derangement's Pet Battle Cooldowns", order = newOrder(), }
-	for _,v in pairs({"Ally", "Enemy"}) do
-		for i=1,3 do
-			self.options.args[v..i.."desc"] = {
+	self.options.args["header1"] = {type = "header", name = "Derangement's Pet Battle Cooldowns", order = newOrder()}
+	for _, v in pairs({"Ally", "Enemy"}) do
+		for i = 1, 3 do
+			self.options.args[v .. i .. "desc"] = {
 				type = "description",
-				name = v..i..":",
+				name = v .. i .. ":",
 				fontSize = "medium",
 				width = .3,
 				order = newOrder()
 			}
-			self.options.args[v..i.."show"] = {
+			self.options.args[v .. i .. "show"] = {
 				type = "toggle",
 				name = "Show",
 				width = .3,
-				set = function(info,val)
-					A.db.global.DerangementPetBattleCooldowns[v..i].show = val
+				set = function(info, val)
+					A.db.global.DerangementPetBattleCooldowns[v .. i].show = val
 					A:PetBattleFrameSetStyle()
 				end,
 				descStyle = "inline",
 				get = function()
-					return A.db.global.DerangementPetBattleCooldowns[v..i].show
+					return A.db.global.DerangementPetBattleCooldowns[v .. i].show
 				end,
-				order = newOrder()	
+				order = newOrder()
 			}
-			self.options.args[v..i.."x"] = {
+			self.options.args[v .. i .. "x"] = {
 				order = newOrder(),
-			    name = "x-offset",
-			    type = "range",
-			    softMin = -50,
-			    softMax = 50,
-			    step = 1,
-		   		set = function(info,val)
-		   			A.db.global.DerangementPetBattleCooldowns[v..i].x = val
-		   			A:PetBattleFrameSetStyle()
-		   		end,
-		    	get = function() return A.db.global.DerangementPetBattleCooldowns[v..i].x end
+				name = "x-offset",
+				type = "range",
+				softMin = -50,
+				softMax = 50,
+				step = 1,
+				set = function(info, val)
+					A.db.global.DerangementPetBattleCooldowns[v .. i].x = val
+					A:PetBattleFrameSetStyle()
+				end,
+				get = function()
+					return A.db.global.DerangementPetBattleCooldowns[v .. i].x
+				end
 			}
-			self.options.args[v..i.."y"] = {
+			self.options.args[v .. i .. "y"] = {
 				order = newOrder(),
-			    name = "y-offset",
-			    type = "range",
-			    softMin = -50,
-			    softMax = 50,
-			    step = 1,
-		   		set = function(info,val)
-		   			A.db.global.DerangementPetBattleCooldowns[v..i].y = val
-		   			A:PetBattleFrameSetStyle()
-		   		end,
-		    	get = function() return A.db.global.DerangementPetBattleCooldowns[v..i].y end
-	    	}
-	    	self.options.args[v..i.."space"] = {
+				name = "y-offset",
+				type = "range",
+				softMin = -50,
+				softMax = 50,
+				step = 1,
+				set = function(info, val)
+					A.db.global.DerangementPetBattleCooldowns[v .. i].y = val
+					A:PetBattleFrameSetStyle()
+				end,
+				get = function()
+					return A.db.global.DerangementPetBattleCooldowns[v .. i].y
+				end
+			}
+			self.options.args[v .. i .. "space"] = {
 				type = "description",
 				name = " ",
 				width = .9,
 				order = newOrder()
 			}
-	    end
+		end
 	end
 end
 
 function A:PetBattleFrameSetStyle()
-	if C_PetBattles.IsInBattle() == false then return end
+	if C_PetBattles.IsInBattle() == false then
+		return
+	end
 	PetBattleFrame:SetScale(self.db.global.scale)
 
 	--rearrange buttons
 	PetBattleFrame.BottomFrame.abilityButtons[3]:ClearAllPoints()
 	PetBattleFrame.BottomFrame.abilityButtons[3]:SetPoint("TOPRIGHT", PetBattleFrame.BottomFrame, "TOP", -3, -30)
 	PetBattleFrame.BottomFrame.abilityButtons[2]:ClearAllPoints()
-	PetBattleFrame.BottomFrame.abilityButtons[2]:SetPoint("TOPRIGHT", PetBattleFrame.BottomFrame.abilityButtons[3], "TOPLEFT", -8, 0)
+	PetBattleFrame.BottomFrame.abilityButtons[2]:SetPoint(
+		"TOPRIGHT",
+		PetBattleFrame.BottomFrame.abilityButtons[3],
+		"TOPLEFT",
+		-8,
+		0
+	)
 	PetBattleFrame.BottomFrame.abilityButtons[1]:ClearAllPoints()
-	PetBattleFrame.BottomFrame.abilityButtons[1]:SetPoint("TOPRIGHT", PetBattleFrame.BottomFrame.abilityButtons[2], "TOPLEFT", -8, 0)
+	PetBattleFrame.BottomFrame.abilityButtons[1]:SetPoint(
+		"TOPRIGHT",
+		PetBattleFrame.BottomFrame.abilityButtons[2],
+		"TOPLEFT",
+		-8,
+		0
+	)
 	PetBattleFrame.BottomFrame.SwitchPetButton:ClearAllPoints()
-	PetBattleFrame.BottomFrame.SwitchPetButton:SetPoint("TOPLEFT", PetBattleFrame.BottomFrame.abilityButtons[3], "TOPRIGHT", 8, 0)
+	PetBattleFrame.BottomFrame.SwitchPetButton:SetPoint(
+		"TOPLEFT",
+		PetBattleFrame.BottomFrame.abilityButtons[3],
+		"TOPRIGHT",
+		8,
+		0
+	)
 	PetBattleFrame.BottomFrame.CatchButton:ClearAllPoints()
-	PetBattleFrame.BottomFrame.CatchButton:SetPoint("TOPLEFT", PetBattleFrame.BottomFrame.SwitchPetButton, "TOPRIGHT", 8, 0)
+	PetBattleFrame.BottomFrame.CatchButton:SetPoint(
+		"TOPLEFT",
+		PetBattleFrame.BottomFrame.SwitchPetButton,
+		"TOPRIGHT",
+		8,
+		0
+	)
 	PetBattleFrame.BottomFrame.ForfeitButton:ClearAllPoints()
 	PetBattleFrame.BottomFrame.ForfeitButton:SetPoint("TOPLEFT", PetBattleFrame.BottomFrame.CatchButton, "TOPRIGHT", 8, 0)
 
@@ -330,25 +383,26 @@ function A:PetBattleFrameSetStyle()
 	PetBattleFrame.BottomFrame.Delimiter:Hide()
 	PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:Hide()
 	PetBattleFrameXPBar:Hide()
-	PetBattleFrameXPBar.Show = function() end
+	PetBattleFrameXPBar.Show = function()
+	end
 	PetBattleFrame.BottomFrame.abilityButtons[1].HotKey:Hide()
 	PetBattleFrame.BottomFrame.abilityButtons[2].HotKey:Hide()
 	PetBattleFrame.BottomFrame.abilityButtons[3].HotKey:Hide()
 	PetBattleFrame.BottomFrame.SwitchPetButton.HotKey:Hide()
 	PetBattleFrame.BottomFrame.CatchButton.HotKey:Hide()
-	
+
 	--move and resize
 	PetBattleFrame.BottomFrame:ClearAllPoints()
 	PetBattleFrame.BottomFrame:SetPoint("TOP", self.anchor, "BOTTOM", 0, -29)
-	
+
 	PetBattleFrame.BottomFrame.LeftEndCap:ClearAllPoints()
 	PetBattleFrame.BottomFrame.LeftEndCap:SetPoint("LEFT", 80, -10)
-	
+
 	PetBattleFrame.BottomFrame.RightEndCap:ClearAllPoints()
 	PetBattleFrame.BottomFrame.RightEndCap:SetPoint("RIGHT", -80, -10)
 
 	PetBattleFrame.BottomFrame.TurnTimer:SetPoint("TOP", 0, 24)
-	
+
 	PetBattleFrame.BottomFrame.PetSelectionFrame:SetPoint("BOTTOM", 0, self.db.global.PetSelectionFrameOffset)
 
 	self:PetBattleFrameSetPosition(self.db.global.x, self.db.global.y)
@@ -367,75 +421,94 @@ function A:PetBattleFrameSetStyle()
 	--SetTexCoord
 	PetBattleFrame.BottomFrame.LeftEndCap:SetTexCoord(0.90136719, 0.77734375, 0.66992188, 0.42578125)
 	PetBattleFrame.BottomFrame.RightEndCap:SetTexCoord(0.77734375, 0.90136719, 0.66992188, 0.42578125)
-	PetBattleFrame.BottomFrame.Background:SetTexCoord(0, 0.48828125, 0, 0.00390625, 1.55078125, 0.48828125, 1.55078125, 0.00390625)
+	PetBattleFrame.BottomFrame.Background:SetTexCoord(
+		0,
+		0.48828125,
+		0,
+		0.00390625,
+		1.55078125,
+		0.48828125,
+		1.55078125,
+		0.00390625
+	)
 	PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetTexCoord(0, 1, 1, 0)
 
 	--incactive Pets
-	PetBattleFrame.Ally2:SetPoint("TOPLEFT", PetBattleFrame.TopArtLeft, "TOPLEFT", 65, -4)	
+	PetBattleFrame.Ally2:SetPoint("TOPLEFT", PetBattleFrame.TopArtLeft, "TOPLEFT", 65, -4)
 	PetBattleFrame.Ally3:SetPoint("TOPLEFT", PetBattleFrame.Ally2, "BOTTOMLEFT", 0, -4)
-	PetBattleFrame.Enemy2:SetPoint("TOPRIGHT", PetBattleFrame.TopArtRight, "TOPRIGHT", -65, -4)	
+	PetBattleFrame.Enemy2:SetPoint("TOPRIGHT", PetBattleFrame.TopArtRight, "TOPRIGHT", -65, -4)
 	PetBattleFrame.Enemy3:SetPoint("TOPRIGHT", PetBattleFrame.Enemy2, "BOTTOMRIGHT", 0, -4)
-	
+
 	--TurnTimer
 	PetBattleFrame.BottomFrame.TurnTimer:SetWidth(370)
 	PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetWidth(61)
-	 PetBattleFrame.BottomFrame.TurnTimer.SkipButton:ClearAllPoints();
-    if(C_PetBattles.IsPlayerNPC(LE_BATTLE_PET_ENEMY)) then
-        PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetPoint("CENTER", 0, 0);
-    else
-        PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetPoint("LEFT", 21, 0);
-    end
+	PetBattleFrame.BottomFrame.TurnTimer.SkipButton:ClearAllPoints()
+	if (C_PetBattles.IsPlayerNPC(LE_BATTLE_PET_ENEMY)) then
+		PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetPoint("CENTER", 0, 0)
+	else
+		PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetPoint("LEFT", 21, 0)
+	end
 	PetBattleFrame.BottomFrame.TurnTimer.ArtFrame:SetWidth(265)
 	PetBattleFrame.BottomFrame.TurnTimer.ArtFrame:SetPoint("CENTER", 31, 0)
 	PetBattleFrame.BottomFrame.TurnTimer.Bar:SetPoint("LEFT", 83, 0)
 	PetBattleFrame.BottomFrame.TurnTimer.TimerText:SetPoint("CENTER", 25, 0)
-	local TIMER_BAR_TEXCOORD_LEFT = 0.56347656;
- 	local TIMER_BAR_TEXCOORD_RIGHT = 0.89453125;
- 	local TIMER_BAR_TEXCOORD_TOP = 0.00195313;
-	local TIMER_BAR_TEXCOORD_BOTTOM = 0.03515625;
-	PetBattleFrame.BottomFrame.TurnTimer:SetScript("OnUpdate", function(self, elapsed)
-		if ( ( C_PetBattles.GetBattleState() ~= LE_PET_BATTLE_STATE_WAITING_PRE_BATTLE ) and
- 		 ( C_PetBattles.GetBattleState() ~= LE_PET_BATTLE_STATE_ROUND_IN_PROGRESS ) and
- 		 ( C_PetBattles.GetBattleState() ~= LE_PET_BATTLE_STATE_WAITING_FOR_FRONT_PETS ) ) then
- 		self.Bar:SetAlpha(0);
- 		self.TimerText:SetText("");
-	 	elseif ( self.turnExpires ) then
-	 		local timeRemaining = self.turnExpires - GetTime();
-	 
-	 		--Deal with variable lag from the server without looking weird
-	 		if ( timeRemaining <= 0.01 ) then
-	 			timeRemaining = 0.01;
-	 		end
-	 
-	 		local timeRatio = 1.0;
-	 		if ( self.turnTime > 0.0 ) then
-	 			timeRatio = timeRemaining / self.turnTime;
-	 		end
-	 		local usableSpace = 264;
-	 
-	 		self.Bar:SetWidth(usableSpace * timeRatio);
-	 		self.Bar:SetTexCoord(TIMER_BAR_TEXCOORD_LEFT, TIMER_BAR_TEXCOORD_LEFT + (TIMER_BAR_TEXCOORD_RIGHT - TIMER_BAR_TEXCOORD_LEFT) * timeRatio, TIMER_BAR_TEXCOORD_TOP, TIMER_BAR_TEXCOORD_BOTTOM);
-	 
-	 		if ( C_PetBattles.IsWaitingOnOpponent() ) then
-	 			self.Bar:SetAlpha(0.5);
-	 			self.TimerText:SetText(PET_BATTLE_WAITING_FOR_OPPONENT);
-	 		else
-	 			self.Bar:SetAlpha(1);
-	 			if ( self.turnTime > 0.0 ) then
-	 				self.TimerText:SetText(ceil(timeRemaining));
-	 			else
-	 				self.TimerText:SetText("")
-	 			end
-	 		end
-	 	else
-	 		self.Bar:SetAlpha(0);
-	 		if ( C_PetBattles.IsWaitingOnOpponent() ) then
-	 			self.TimerText:SetText(PET_BATTLE_WAITING_FOR_OPPONENT);
-	 		else
-	 			self.TimerText:SetText(PET_BATTLE_SELECT_AN_ACTION);
-	 		end
-	 	end
-	end)
+	local TIMER_BAR_TEXCOORD_LEFT = 0.56347656
+	local TIMER_BAR_TEXCOORD_RIGHT = 0.89453125
+	local TIMER_BAR_TEXCOORD_TOP = 0.00195313
+	local TIMER_BAR_TEXCOORD_BOTTOM = 0.03515625
+	PetBattleFrame.BottomFrame.TurnTimer:SetScript(
+		"OnUpdate",
+		function(self, elapsed)
+			if
+				((C_PetBattles.GetBattleState() ~= LE_PET_BATTLE_STATE_WAITING_PRE_BATTLE) and
+					(C_PetBattles.GetBattleState() ~= LE_PET_BATTLE_STATE_ROUND_IN_PROGRESS) and
+					(C_PetBattles.GetBattleState() ~= LE_PET_BATTLE_STATE_WAITING_FOR_FRONT_PETS))
+			 then
+				self.Bar:SetAlpha(0)
+				self.TimerText:SetText("")
+			elseif (self.turnExpires) then
+				local timeRemaining = self.turnExpires - GetTime()
+
+				--Deal with variable lag from the server without looking weird
+				if (timeRemaining <= 0.01) then
+					timeRemaining = 0.01
+				end
+
+				local timeRatio = 1.0
+				if (self.turnTime > 0.0) then
+					timeRatio = timeRemaining / self.turnTime
+				end
+				local usableSpace = 264
+
+				self.Bar:SetWidth(usableSpace * timeRatio)
+				self.Bar:SetTexCoord(
+					TIMER_BAR_TEXCOORD_LEFT,
+					TIMER_BAR_TEXCOORD_LEFT + (TIMER_BAR_TEXCOORD_RIGHT - TIMER_BAR_TEXCOORD_LEFT) * timeRatio,
+					TIMER_BAR_TEXCOORD_TOP,
+					TIMER_BAR_TEXCOORD_BOTTOM
+				)
+
+				if (C_PetBattles.IsWaitingOnOpponent()) then
+					self.Bar:SetAlpha(0.5)
+					self.TimerText:SetText(PET_BATTLE_WAITING_FOR_OPPONENT)
+				else
+					self.Bar:SetAlpha(1)
+					if (self.turnTime > 0.0) then
+						self.TimerText:SetText(ceil(timeRemaining))
+					else
+						self.TimerText:SetText("")
+					end
+				end
+			else
+				self.Bar:SetAlpha(0)
+				if (C_PetBattles.IsWaitingOnOpponent()) then
+					self.TimerText:SetText(PET_BATTLE_WAITING_FOR_OPPONENT)
+				else
+					self.TimerText:SetText(PET_BATTLE_SELECT_AN_ACTION)
+				end
+			end
+		end
+	)
 
 	local texture = "Interface\\Addons\\Annene\\texture.BLP"
 	PetBattleFrame.TopArtLeft:SetTexture(texture)
@@ -459,13 +532,19 @@ function A:PetBattleFrameSetStyle()
 		if E.private.skins.blizzard.petbattleui then
 			E.PopupDialogs["Annene"] = {
 				text = "You have got ElvUI's pet battle skin and Annene both enabled at the same time.\n\nSelect which skin you want to use.\n",
-				OnAccept = function() DisableAddOn("Annene"); ReloadUI() end,
-				OnCancel = function() E.private.skins.blizzard.petbattleui = false; ReloadUI() end,
-				button1 = 'ElvUI\'s skin',
-				button2 = 'Annene',				
+				OnAccept = function()
+					DisableAddOn("Annene")
+					ReloadUI()
+				end,
+				OnCancel = function()
+					E.private.skins.blizzard.petbattleui = false
+					ReloadUI()
+				end,
+				button1 = "ElvUI's skin",
+				button2 = "Annene",
 				timeout = 0,
 				whileDead = 1,
-				hideOnEscape = false,
+				hideOnEscape = false
 			}
 			E:StaticPopup_Show("Annene")
 		end
@@ -486,11 +565,11 @@ function A:PetBattleFrameSetStyle()
 	-- tdBattlePetScript
 	if tdBattlePetScriptAutoButton then
 		tdBattlePetScriptAutoButton:SetWidth(60)
-		if(C_PetBattles.IsPlayerNPC(LE_BATTLE_PET_ENEMY)) then
-        	PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetPoint("CENTER", -30, 0)
-    	end
-    	local _,_,ArtFrame2 = PetBattleFrame.BottomFrame.TurnTimer:GetChildren()
-    	ArtFrame2:Hide()
+		if (C_PetBattles.IsPlayerNPC(LE_BATTLE_PET_ENEMY)) then
+			PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetPoint("CENTER", -30, 0)
+		end
+		local _, _, ArtFrame2 = PetBattleFrame.BottomFrame.TurnTimer:GetChildren()
+		ArtFrame2:Hide()
 	end
 
 	-- Derangement's Pet Battle Cooldowns
@@ -498,17 +577,29 @@ function A:PetBattleFrameSetStyle()
 		-- Ally1
 		if self.db.global.DerangementPetBattleCooldowns.Ally1.show == true then
 			DeePetBattleFrame.Ally1:Show()
-			DeePetBattleFrame.Ally1:SetPoint("TOPLEFT", PetBattleFrame.ActiveAlly, "TOPRIGHT", self.db.global.DerangementPetBattleCooldowns.Ally1.x, self.db.global.DerangementPetBattleCooldowns.Ally1.y)
+			DeePetBattleFrame.Ally1:SetPoint(
+				"TOPLEFT",
+				PetBattleFrame.ActiveAlly,
+				"TOPRIGHT",
+				self.db.global.DerangementPetBattleCooldowns.Ally1.x,
+				self.db.global.DerangementPetBattleCooldowns.Ally1.y
+			)
 		else
 			DeePetBattleFrame.Ally1:Hide()
 		end
 		-- Ally2 & Ally3
-		for i=2,C_PetBattles.GetNumPets(1) do
-			if self.db.global.DerangementPetBattleCooldowns["Ally"..i].show == true then
-				DeePetBattleFrame["Ally"..i]:Show()
-				DeePetBattleFrame["Ally"..i]:SetPoint("RIGHT", PetBattleFrame["Ally"..i], "LEFT", -12 + self.db.global.DerangementPetBattleCooldowns["Ally"..i].x, self.db.global.DerangementPetBattleCooldowns["Ally"..i].y)
+		for i = 2, C_PetBattles.GetNumPets(1) do
+			if self.db.global.DerangementPetBattleCooldowns["Ally" .. i].show == true then
+				DeePetBattleFrame["Ally" .. i]:Show()
+				DeePetBattleFrame["Ally" .. i]:SetPoint(
+					"RIGHT",
+					PetBattleFrame["Ally" .. i],
+					"LEFT",
+					-12 + self.db.global.DerangementPetBattleCooldowns["Ally" .. i].x,
+					self.db.global.DerangementPetBattleCooldowns["Ally" .. i].y
+				)
 			else
-				DeePetBattleFrame["Ally"..i]:Hide()
+				DeePetBattleFrame["Ally" .. i]:Hide()
 			end
 		end
 		-- Enemy1
@@ -516,17 +607,29 @@ function A:PetBattleFrameSetStyle()
 			DeePetBattleFrame.Enemy1:SetFrameStrata("BACKGROUND")
 			DeePetBattleFrame.Enemy1:Show()
 			DeePetBattleFrame.Enemy1:ClearAllPoints()
-			DeePetBattleFrame.Enemy1:SetPoint("BOTTOM", self.anchor, "TOP", self.db.global.DerangementPetBattleCooldowns.Enemy1.x, 4 + self.db.global.DerangementPetBattleCooldowns.Enemy1.y)
+			DeePetBattleFrame.Enemy1:SetPoint(
+				"BOTTOM",
+				self.anchor,
+				"TOP",
+				self.db.global.DerangementPetBattleCooldowns.Enemy1.x,
+				4 + self.db.global.DerangementPetBattleCooldowns.Enemy1.y
+			)
 		else
 			DeePetBattleFrame.Enemy1:Hide()
 		end
 		-- Enemy2 & Enemy3
-		for i=2,C_PetBattles.GetNumPets(2) do
-			if self.db.global.DerangementPetBattleCooldowns["Enemy"..i].show == true then
-				DeePetBattleFrame["Enemy"..i]:Show()
-				DeePetBattleFrame["Enemy"..i]:SetPoint("LEFT", PetBattleFrame["Enemy"..i], "RIGHT", 12 + self.db.global.DerangementPetBattleCooldowns["Enemy"..i].x, self.db.global.DerangementPetBattleCooldowns["Enemy"..i].y)
+		for i = 2, C_PetBattles.GetNumPets(2) do
+			if self.db.global.DerangementPetBattleCooldowns["Enemy" .. i].show == true then
+				DeePetBattleFrame["Enemy" .. i]:Show()
+				DeePetBattleFrame["Enemy" .. i]:SetPoint(
+					"LEFT",
+					PetBattleFrame["Enemy" .. i],
+					"RIGHT",
+					12 + self.db.global.DerangementPetBattleCooldowns["Enemy" .. i].x,
+					self.db.global.DerangementPetBattleCooldowns["Enemy" .. i].y
+				)
 			else
-				DeePetBattleFrame["Enemy"..i]:Hide()
+				DeePetBattleFrame["Enemy" .. i]:Hide()
 			end
 		end
 	end
