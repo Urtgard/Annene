@@ -634,8 +634,8 @@ function A:PetBattleFrameSetStyle()
 		end
 	end
 
-	-- Battle Pet Battle Stats
-	if IsAddOnLoaded("BattlePetBattleStats") then
+	-- Battle Pet Battle UI Tweaks
+	if IsAddOnLoaded("BattlePetBattleUITweaks") then
 		PetBattleFrame.TopVersus:Show()
 		PetBattleFrame.TopVersusText:Show()
 	else
