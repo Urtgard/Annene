@@ -20,6 +20,9 @@ function A:OnInitialize()
 				Enemy1 = {show = true, x = 0, y = 0},
 				Enemy2 = {show = true, x = 0, y = 0},
 				Enemy3 = {show = true, x = 0, y = 0}
+			},
+			BattlePetBattleUITweaks = {
+				EnemyAbilities = {x = 0, y = 0, scale = 0.8}
 			}
 		}
 	}
@@ -225,19 +228,6 @@ function A:BuildOptionsTable()
 				end,
 				order = newOrder()
 			},
-			PetTracker = {
-				type = "toggle",
-				name = "PetTracker Enemybar",
-				set = function(info, val)
-					A.db.global.PetTracker = val
-					A:PetBattleFrameSetStyle()
-				end,
-				descStyle = "inline",
-				get = function()
-					return A.db.global.PetTracker
-				end,
-				order = newOrder()
-			},
 			blankLine3 = {
 				type = "description",
 				order = -2,
@@ -250,71 +240,160 @@ function A:BuildOptionsTable()
 				func = function()
 					Annene.db:ResetDB()
 					A:PetBattleFrameSetStyle()
-				end
+				end,
+				width = 1.2
 			}
 		}
 	}
+
+	-- Battle Pet Battle UI Tweaks
+	if IsAddOnLoaded("BattlePetBattleUITweaks") then
+		self.options.args["headerBattlePetBattleUITweaks"] = {
+			type = "header",
+			name = "Battle Pet Battle UI Tweaks",
+			order = newOrder()
+		}
+
+		self.options.args["BattlePetBattleUITweaksEnemyAbilities"] = {
+			type = "description",
+			name = "Enemy Abilities:",
+			fontSize = "medium",
+			-- width = .8,
+			order = newOrder()
+		}
+		self.options.args["BattlePetBattleUITweaksEnemyAbilitiesX"] = {
+			order = newOrder(),
+			name = "x-offset",
+			type = "range",
+			softMin = -50,
+			softMax = 50,
+			step = 1,
+			set = function(info, val)
+				A.db.global.BattlePetBattleUITweaks.EnemyAbilities.x = val
+				A:PetBattleFrameSetStyle()
+			end,
+			get = function()
+				return A.db.global.BattlePetBattleUITweaks.EnemyAbilities.x
+			end
+		}
+		self.options.args["BattlePetBattleUITweaksEnemyAbilitiesY"] = {
+			order = newOrder(),
+			name = "y-offset",
+			type = "range",
+			softMin = -50,
+			softMax = 50,
+			step = 1,
+			set = function(info, val)
+				A.db.global.BattlePetBattleUITweaks.EnemyAbilities.y = val
+				A:PetBattleFrameSetStyle()
+			end,
+			get = function()
+				return A.db.global.BattlePetBattleUITweaks.EnemyAbilities.y
+			end
+		}
+		self.options.args["BattlePetBattleUITweaksEnemyAbilitiesScale"] = {
+			order = newOrder(),
+			name = "scale",
+			type = "range",
+			min = 0.01,
+			softMin = 0,
+			softMax = 2,
+			step = .05,
+			set = function(info, val)
+				A.db.global.BattlePetBattleUITweaks.EnemyAbilities.scale = val
+				A:PetBattleFrameSetStyle()
+			end,
+			get = function()
+				return A.db.global.BattlePetBattleUITweaks.EnemyAbilities.scale
+			end
+		}
+	end
+
+	-- PetTracker
+	if IsAddOnLoaded("PetTracker") then
+		self.options.args["headerPetTracker"] = {type = "header", name = "PetTracker", order = newOrder()}
+		self.options.args["PetTracker"] = {
+			type = "toggle",
+			name = "PetTracker Enemybar",
+			set = function(info, val)
+				A.db.global.PetTracker = val
+				A:PetBattleFrameSetStyle()
+			end,
+			descStyle = "inline",
+			get = function()
+				return A.db.global.PetTracker
+			end,
+			order = newOrder()
+		}
+	end
+
 	-- Derangement's Pet Battle Cooldowns
-	self.options.args["header1"] = {type = "header", name = "Derangement's Pet Battle Cooldowns", order = newOrder()}
-	for _, v in pairs({"Ally", "Enemy"}) do
-		for i = 1, 3 do
-			self.options.args[v .. i .. "desc"] = {
-				type = "description",
-				name = v .. i .. ":",
-				fontSize = "medium",
-				width = .3,
-				order = newOrder()
-			}
-			self.options.args[v .. i .. "show"] = {
-				type = "toggle",
-				name = "Show",
-				width = .3,
-				set = function(info, val)
-					A.db.global.DerangementPetBattleCooldowns[v .. i].show = val
-					A:PetBattleFrameSetStyle()
-				end,
-				descStyle = "inline",
-				get = function()
-					return A.db.global.DerangementPetBattleCooldowns[v .. i].show
-				end,
-				order = newOrder()
-			}
-			self.options.args[v .. i .. "x"] = {
-				order = newOrder(),
-				name = "x-offset",
-				type = "range",
-				softMin = -50,
-				softMax = 50,
-				step = 1,
-				set = function(info, val)
-					A.db.global.DerangementPetBattleCooldowns[v .. i].x = val
-					A:PetBattleFrameSetStyle()
-				end,
-				get = function()
-					return A.db.global.DerangementPetBattleCooldowns[v .. i].x
-				end
-			}
-			self.options.args[v .. i .. "y"] = {
-				order = newOrder(),
-				name = "y-offset",
-				type = "range",
-				softMin = -50,
-				softMax = 50,
-				step = 1,
-				set = function(info, val)
-					A.db.global.DerangementPetBattleCooldowns[v .. i].y = val
-					A:PetBattleFrameSetStyle()
-				end,
-				get = function()
-					return A.db.global.DerangementPetBattleCooldowns[v .. i].y
-				end
-			}
-			self.options.args[v .. i .. "space"] = {
-				type = "description",
-				name = " ",
-				width = .9,
-				order = newOrder()
-			}
+	if IsAddOnLoaded("DerangementPetBattleCooldowns") then
+		self.options.args["headerDerangementPetBattleCooldowns"] = {
+			type = "header",
+			name = "Derangement's Pet Battle Cooldowns",
+			order = newOrder()
+		}
+		for _, v in pairs({"Ally", "Enemy"}) do
+			for i = 1, 3 do
+				self.options.args[v .. i .. "desc"] = {
+					type = "description",
+					name = v .. i .. ":",
+					fontSize = "medium",
+					width = .4,
+					order = newOrder()
+				}
+				self.options.args[v .. i .. "show"] = {
+					type = "toggle",
+					name = "Show",
+					width = .4,
+					set = function(info, val)
+						A.db.global.DerangementPetBattleCooldowns[v .. i].show = val
+						A:PetBattleFrameSetStyle()
+					end,
+					descStyle = "inline",
+					get = function()
+						return A.db.global.DerangementPetBattleCooldowns[v .. i].show
+					end,
+					order = newOrder()
+				}
+				self.options.args[v .. i .. "x"] = {
+					order = newOrder(),
+					name = "x-offset",
+					type = "range",
+					softMin = -50,
+					softMax = 50,
+					step = 1,
+					set = function(info, val)
+						A.db.global.DerangementPetBattleCooldowns[v .. i].x = val
+						A:PetBattleFrameSetStyle()
+					end,
+					get = function()
+						return A.db.global.DerangementPetBattleCooldowns[v .. i].x
+					end
+				}
+				self.options.args[v .. i .. "y"] = {
+					order = newOrder(),
+					name = "y-offset",
+					type = "range",
+					softMin = -50,
+					softMax = 50,
+					step = 1,
+					set = function(info, val)
+						A.db.global.DerangementPetBattleCooldowns[v .. i].y = val
+						A:PetBattleFrameSetStyle()
+					end,
+					get = function()
+						return A.db.global.DerangementPetBattleCooldowns[v .. i].y
+					end
+				}
+				self.options.args[v .. i .. "space"] = {
+					type = "description",
+					name = " ",
+					width = .6,
+					order = newOrder()
+				}
+			end
 		end
 	end
 end
@@ -522,6 +601,8 @@ function A:PetBattleFrameSetStyle()
 	PetBattleFrame.BottomFrame.CatchButton.SelectedHighlight:SetTexture(texture)
 	PetBattleFrame.BottomFrame.ForfeitButton.SelectedHighlight:SetTexture(texture)
 	PetBattleFrame.BottomFrame.TurnTimer.TimerBG:SetTexture(texture)
+	PetBattleFrame.TopVersus:Hide()
+	PetBattleFrame.TopVersusText:Hide()
 
 	-----------------
 	--	Other Addons
@@ -636,11 +717,38 @@ function A:PetBattleFrameSetStyle()
 
 	-- Battle Pet Battle UI Tweaks
 	if IsAddOnLoaded("BattlePetBattleUITweaks") then
-		PetBattleFrame.TopVersus:Show()
-		PetBattleFrame.TopVersusText:Show()
-	else
-		PetBattleFrame.TopVersus:Hide()
-		PetBattleFrame.TopVersusText:Hide()
+		-- Round Counter
+		if BattlePetBattleUITweaksSettings.RoundCounter then
+			PetBattleFrame.TopVersus:Show()
+			PetBattleFrame.TopVersusText:Show()
+		else
+			PetBattleFrame.TopVersus:Hide()
+			PetBattleFrame.TopVersusText:Hide()
+		end
+
+		-- Enemy Abilities
+		_BattlePetBattleUITweaks.abilities:SetPoint(
+			"BOTTOM",
+			self.anchor,
+			"TOP",
+			self.db.global.BattlePetBattleUITweaks.EnemyAbilities.x,
+			self.db.global.BattlePetBattleUITweaks.EnemyAbilities.y - 4
+		)
+		_BattlePetBattleUITweaks.abilities:SetScale(self.db.global.BattlePetBattleUITweaks.EnemyAbilities.scale)
+
+		hooksecurefunc(
+			"PetBattlePetSelectionFrame_Hide",
+			function()
+				_BattlePetBattleUITweaks.abilities:ClearAllPoints()
+				_BattlePetBattleUITweaks.abilities:SetPoint(
+					"BOTTOM",
+					self.anchor,
+					"TOP",
+					self.db.global.BattlePetBattleUITweaks.EnemyAbilities.x,
+					self.db.global.BattlePetBattleUITweaks.EnemyAbilities.y - 4
+				)
+			end
+		)
 	end
 end
 

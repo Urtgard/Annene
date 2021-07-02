@@ -5,7 +5,7 @@
 ## X-Curse-Project-ID: 92404
 ## X-WoWI-ID: 23879
 ## SavedVariables: AnneneDB
-## OptionalDeps: BattlePetBattleStats
+## OptionalDeps: BattlePetBattleUITweaks, DerangementPetBattleCooldowns, PetTracker
 
 embeds.xml
 Annene.lua
