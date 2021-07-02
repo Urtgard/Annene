@@ -265,8 +265,8 @@ function A:BuildOptionsTable()
 			order = newOrder(),
 			name = "x-offset",
 			type = "range",
-			softMin = -50,
-			softMax = 50,
+			softMin = -400,
+			softMax = 400,
 			step = 1,
 			set = function(info, val)
 				A.db.global.BattlePetBattleUITweaks.EnemyAbilities.x = val
@@ -280,8 +280,8 @@ function A:BuildOptionsTable()
 			order = newOrder(),
 			name = "y-offset",
 			type = "range",
-			softMin = -50,
-			softMax = 50,
+			softMin = -400,
+			softMax = 400,
 			step = 1,
 			set = function(info, val)
 				A.db.global.BattlePetBattleUITweaks.EnemyAbilities.y = val
@@ -361,8 +361,8 @@ function A:BuildOptionsTable()
 					order = newOrder(),
 					name = "x-offset",
 					type = "range",
-					softMin = -50,
-					softMax = 50,
+					softMin = -400,
+					softMax = 400,
 					step = 1,
 					set = function(info, val)
 						A.db.global.DerangementPetBattleCooldowns[v .. i].x = val
@@ -376,8 +376,8 @@ function A:BuildOptionsTable()
 					order = newOrder(),
 					name = "y-offset",
 					type = "range",
-					softMin = -50,
-					softMax = 50,
+					softMin = -400,
+					softMax = 400,
 					step = 1,
 					set = function(info, val)
 						A.db.global.DerangementPetBattleCooldowns[v .. i].y = val
