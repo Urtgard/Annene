@@ -12,6 +12,7 @@ function A:OnInitialize()
 			scale = 1.0,
 			anchor = false,
 			PetSelectionFrameOffset = 131,
+			weatherFrameAtTop = false,
 			PetTracker = true,
 			DerangementPetBattleCooldowns = {
 				Ally1 = {show = false, x = 0, y = 0},
@@ -51,7 +52,6 @@ function A:OnEnable()
 	anchor:SetWidth(156)
 	anchor:SetHeight(2)
 	anchor:SetPoint("CENTER", "UIParent", "CENTER")
-	--	PetBattleFrame.TopVersus:SetPoint("TOP", anchor, "CENTER")
 
 	A.tooltipAnchor = CreateFrame("Frame", "AnneneTooltipAnchor", UIParent)
 	A.tooltipAnchor:SetWidth(1)
@@ -225,6 +225,19 @@ function A:BuildOptionsTable()
 				descStyle = "inline",
 				get = function()
 					return A.db.global.anchor
+				end,
+				order = newOrder()
+			},
+			weatherFrameAtTop = {
+				type = "toggle",
+				name = "Show weather frame at top",
+				set = function(info, val)
+					A.db.global.weatherFrameAtTop = val
+					A:PetBattleFrameSetStyle()
+				end,
+				descStyle = "inline",
+				get = function()
+					return A.db.global.weatherFrameAtTop
 				end,
 				order = newOrder()
 			},
@@ -491,10 +504,6 @@ function A:PetBattleFrameSetStyle()
 	PetBattleFrame.TopArtRight:ClearAllPoints()
 	PetBattleFrame.TopArtRight:SetPoint("TOPLEFT", self.anchor, "TOP", 0, -1)
 
-	PetBattleFrame.WeatherFrame:ClearAllPoints()
-	PetBattleFrame.WeatherFrame:SetPoint("TOP", PetBattleFrame.BottomFrame, "BOTTOM", 0, -20)
-	PetBattleFrame.WeatherFrame:SetFrameStrata("BACKGROUND")
-
 	PetBattleFrame.EnemyPadBuffFrame:SetPoint("TOPLEFT", PetBattleFrame.TopArtRight, "BOTTOMRIGHT", -365, 20)
 	PetBattleFrame.AllyPadBuffFrame:SetPoint("TOPRIGHT", PetBattleFrame.TopArtLeft, "BOTTOMLEFT", 365, 20)
 	--SetTexCoord
@@ -721,9 +730,6 @@ function A:PetBattleFrameSetStyle()
 		if BattlePetBattleUITweaksSettings.RoundCounter then
 			PetBattleFrame.TopVersus:Show()
 			PetBattleFrame.TopVersusText:Show()
-		else
-			PetBattleFrame.TopVersus:Hide()
-			PetBattleFrame.TopVersusText:Hide()
 		end
 
 		-- Enemy Abilities
@@ -749,6 +755,21 @@ function A:PetBattleFrameSetStyle()
 				)
 			end
 		)
+	end
+
+	-- WeatherFrame
+	PetBattleFrame.WeatherFrame:ClearAllPoints()
+	if self.db.global.weatherFrameAtTop then
+		PetBattleFrame.WeatherFrame.BackgroundArt:SetPoint("TOP", UIParent, 0, 0)
+		if PetBattleFrame.TopVersus:IsVisible() then
+			PetBattleFrame.WeatherFrame:SetPoint("TOP", 0, -60)
+		else
+			PetBattleFrame.WeatherFrame:SetPoint("TOP", 0, -24)
+		end
+	else
+		PetBattleFrame.WeatherFrame:SetPoint("TOP", PetBattleFrame.BottomFrame, "BOTTOM", 0, -20)
+		PetBattleFrame.WeatherFrame.BackgroundArt:SetPoint("TOP", PetBattleFrame.WeatherFrame, 0, 24)
+		PetBattleFrame.WeatherFrame:SetFrameStrata("BACKGROUND")
 	end
 end
 
