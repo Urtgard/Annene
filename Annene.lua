@@ -222,7 +222,6 @@ function A:BuildOptionsTable()
 					A.db.global.anchor = val
 					A:PetBattleFrameSetStyle()
 				end,
-				descStyle = "inline",
 				get = function()
 					return A.db.global.anchor
 				end,
@@ -235,7 +234,6 @@ function A:BuildOptionsTable()
 					A.db.global.weatherFrameAtTop = val
 					A:PetBattleFrameSetStyle()
 				end,
-				descStyle = "inline",
 				get = function()
 					return A.db.global.weatherFrameAtTop
 				end,
@@ -332,7 +330,6 @@ function A:BuildOptionsTable()
 				A.db.global.PetTracker = val
 				A:PetBattleFrameSetStyle()
 			end,
-			descStyle = "inline",
 			get = function()
 				return A.db.global.PetTracker
 			end,
@@ -364,7 +361,6 @@ function A:BuildOptionsTable()
 						A.db.global.DerangementPetBattleCooldowns[v .. i].show = val
 						A:PetBattleFrameSetStyle()
 					end,
-					descStyle = "inline",
 					get = function()
 						return A.db.global.DerangementPetBattleCooldowns[v .. i].show
 					end,
