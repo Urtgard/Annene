@@ -67,7 +67,9 @@ function A.otherAddons.tdBattlePetScript:Setup()
             PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetPoint("CENTER", -30, 0)
         end
         local _, _, ArtFrame2 = PetBattleFrame.BottomFrame.TurnTimer:GetChildren()
-        ArtFrame2:Hide()
+        if ArtFrame2 then
+            ArtFrame2:Hide()
+        end
     end
 end
 
