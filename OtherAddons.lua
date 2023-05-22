@@ -62,7 +62,6 @@ end
 A.otherAddons.tdBattlePetScript = {}
 function A.otherAddons.tdBattlePetScript:Setup()
     if tdBattlePetScriptAutoButton then
-        tdBattlePetScriptAutoButton:SetWidth(60)
         if (C_PetBattles.IsPlayerNPC(LE_BATTLE_PET_ENEMY)) then
             PetBattleFrame.BottomFrame.TurnTimer.SkipButton:SetPoint("CENTER", -30, 0)
         end
