@@ -1,9 +1,10 @@
-## Interface: 100100
+## Interface: 100105
 ## Title: Annene
 ## Author: Urtgard
 ## Version: @project-version@
 ## X-Curse-Project-ID: 92404
 ## X-WoWI-ID: 23879
+## X-Wago-ID: x61zxxK1
 ## SavedVariables: AnneneDB
 ## OptionalDeps: BattlePetBattleUITweaks, DerangementPetBattleCooldowns, PetTracker
 
