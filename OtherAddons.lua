@@ -25,7 +25,8 @@ function A.otherAddons.ElvUI:Setup()
         local E = unpack(ElvUI)
         if E.private.skins.blizzard.petbattleui then
             E.PopupDialogs["Annene"] = {
-                text = "You have got ElvUI's pet battle skin and Annene both enabled at the same time.\n\nSelect which skin you want to use.\n",
+                text =
+                "You have got ElvUI's pet battle skin and Annene both enabled at the same time.\n\nSelect which skin you want to use.\n",
                 OnAccept = function()
                     DisableAddOn("Annene")
                     ReloadUI()
@@ -138,7 +139,7 @@ end
 
 A.otherAddons.BattlePetBattleUITweaks = {}
 function A.otherAddons.BattlePetBattleUITweaks:Setup()
-    if IsAddOnLoaded("BattlePetBattleUITweaks") then
+    if C_AddOns.IsAddOnLoaded("BattlePetBattleUITweaks") then
         -- Round Counter
         if BattlePetBattleUITweaksSettings.RoundCounter then
             PetBattleFrame.TopVersus:Show()

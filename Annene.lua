@@ -15,15 +15,15 @@ function A:OnInitialize()
 			weatherFrameAtTop = false,
 			PetTracker = true,
 			DerangementPetBattleCooldowns = {
-				Ally1 = {show = false, x = 0, y = 0},
-				Ally2 = {show = true, x = 0, y = 0},
-				Ally3 = {show = true, x = 0, y = 0},
-				Enemy1 = {show = true, x = 0, y = 0},
-				Enemy2 = {show = true, x = 0, y = 0},
-				Enemy3 = {show = true, x = 0, y = 0}
+				Ally1 = { show = false, x = 0, y = 0 },
+				Ally2 = { show = true, x = 0, y = 0 },
+				Ally3 = { show = true, x = 0, y = 0 },
+				Enemy1 = { show = true, x = 0, y = 0 },
+				Enemy2 = { show = true, x = 0, y = 0 },
+				Enemy3 = { show = true, x = 0, y = 0 }
 			},
 			BattlePetBattleUITweaks = {
-				EnemyAbilities = {x = 0, y = 0, scale = 0.8}
+				EnemyAbilities = { x = 0, y = 0, scale = 0.8 }
 			}
 		}
 	}
@@ -258,7 +258,7 @@ function A:BuildOptionsTable()
 	}
 
 	-- Battle Pet Battle UI Tweaks
-	if IsAddOnLoaded("BattlePetBattleUITweaks") then
+	if C_AddOns.IsAddOnLoaded("BattlePetBattleUITweaks") then
 		self.options.args["headerBattlePetBattleUITweaks"] = {
 			type = "header",
 			name = "Battle Pet Battle UI Tweaks",
@@ -321,8 +321,8 @@ function A:BuildOptionsTable()
 	end
 
 	-- PetTracker
-	if IsAddOnLoaded("PetTracker") then
-		self.options.args["headerPetTracker"] = {type = "header", name = "PetTracker", order = newOrder()}
+	if C_AddOns.IsAddOnLoaded("PetTracker") then
+		self.options.args["headerPetTracker"] = { type = "header", name = "PetTracker", order = newOrder() }
 		self.options.args["PetTracker"] = {
 			type = "toggle",
 			name = "PetTracker Enemybar",
@@ -338,13 +338,13 @@ function A:BuildOptionsTable()
 	end
 
 	-- Derangement's Pet Battle Cooldowns
-	if IsAddOnLoaded("DerangementPetBattleCooldowns") then
+	if C_AddOns.IsAddOnLoaded("DerangementPetBattleCooldowns") then
 		self.options.args["headerDerangementPetBattleCooldowns"] = {
 			type = "header",
 			name = "Derangement's Pet Battle Cooldowns",
 			order = newOrder()
 		}
-		for _, v in pairs({"Ally", "Enemy"}) do
+		for _, v in pairs({ "Ally", "Enemy" }) do
 			for i = 1, 3 do
 				self.options.args[v .. i .. "desc"] = {
 					type = "description",
@@ -547,7 +547,7 @@ function A:PetBattleFrameSetStyle()
 				((C_PetBattles.GetBattleState() ~= LE_PET_BATTLE_STATE_WAITING_PRE_BATTLE) and
 					(C_PetBattles.GetBattleState() ~= LE_PET_BATTLE_STATE_ROUND_IN_PROGRESS) and
 					(C_PetBattles.GetBattleState() ~= LE_PET_BATTLE_STATE_WAITING_FOR_FRONT_PETS))
-			 then
+			then
 				self.Bar:SetAlpha(0)
 				self.TimerText:SetText("")
 			elseif (self.turnExpires) then
