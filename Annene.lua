@@ -37,6 +37,19 @@ function A:OnEnable()
 	self:RegisterEvent("PET_BATTLE_OPENING_START", "PetBattleFrameSetStyle")
 	self:RegisterEvent("ADDON_LOADED", "AddonLoaded")
 
+	--[[
+		The order of event handlers is not guaranteed.
+		PetBattleFrameSetStyle may be executed before BlizzardPetBattleFrame_Display has been called.
+		In this case, not all elements that need to be adjusted exist yet,
+		and it may overwrite changes that have already been made.
+	]]
+	local BlizzardPetBattleFrame_Display = PetBattleFrame_Display
+	function PetBattleFrame_Display(petBattleFrame)
+		BlizzardPetBattleFrame_Display(petBattleFrame)
+
+		A:PetBattleFrameSetStyle()
+	end
+
 	------------------
 	-- 	Options
 	------------------
@@ -408,9 +421,11 @@ function A:BuildOptionsTable()
 end
 
 function A:PetBattleFrameSetStyle()
-	if C_PetBattles.IsInBattle() == false then
+	if (C_PetBattles.IsInBattle() == false
+			or #PetBattleFrame.BottomFrame.abilityButtons == 0) then
 		return
 	end
+
 	PetBattleFrame:SetScale(self.db.global.scale)
 
 	--rearrange buttons
