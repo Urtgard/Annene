@@ -466,31 +466,24 @@ function A:PetBattleFrameSetStyle()
 	PetBattleFrame.BottomFrame.ForfeitButton:ClearAllPoints()
 	PetBattleFrame.BottomFrame.ForfeitButton:SetPoint("TOPLEFT", PetBattleFrame.BottomFrame.CatchButton, "TOPRIGHT", 8, 0)
 
-	local bSize = 46
-	PetBattleFrame.BottomFrame.abilityButtons[1]:SetWidth(bSize)
-	PetBattleFrame.BottomFrame.abilityButtons[2]:SetWidth(bSize)
-	PetBattleFrame.BottomFrame.abilityButtons[3]:SetWidth(bSize)
-	PetBattleFrame.BottomFrame.abilityButtons[1]:SetHeight(bSize)
-	PetBattleFrame.BottomFrame.abilityButtons[2]:SetHeight(bSize)
-	PetBattleFrame.BottomFrame.abilityButtons[3]:SetHeight(bSize)
+	local buttonSize = 46
+	for _, button in pairs(PetBattleFrame.BottomFrame.abilityButtons) do
+		button:SetSize(buttonSize, buttonSize)
 
-	PetBattleFrame.BottomFrame.SwitchPetButton:SetWidth(bSize)
-	PetBattleFrame.BottomFrame.SwitchPetButton:SetHeight(bSize)
-	PetBattleFrame.BottomFrame.CatchButton:SetWidth(bSize)
-	PetBattleFrame.BottomFrame.CatchButton:SetHeight(bSize)
-	PetBattleFrame.BottomFrame.ForfeitButton:SetWidth(bSize)
-	PetBattleFrame.BottomFrame.ForfeitButton:SetHeight(bSize)
+		button.HotKey:Hide()
+	end
+
+	PetBattleFrame.BottomFrame.SwitchPetButton:SetSize(buttonSize, buttonSize)
+	PetBattleFrame.BottomFrame.CatchButton:SetSize(buttonSize, buttonSize)
+	PetBattleFrame.BottomFrame.ForfeitButton:SetSize(buttonSize, buttonSize)
+
 	--hide unnecessary stuff
 	PetBattleFrame.BottomFrame.MicroButtonFrame:Hide()
 	PetBattleFrame.BottomFrame.FlowFrame:Hide()
 	PetBattleFrame.BottomFrame.Delimiter:Hide()
 	PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:Hide()
 	PetBattleFrameXPBar:Hide()
-	PetBattleFrameXPBar.Show = function()
-	end
-	PetBattleFrame.BottomFrame.abilityButtons[1].HotKey:Hide()
-	PetBattleFrame.BottomFrame.abilityButtons[2].HotKey:Hide()
-	PetBattleFrame.BottomFrame.abilityButtons[3].HotKey:Hide()
+	PetBattleFrameXPBar.Show = function() end
 	PetBattleFrame.BottomFrame.SwitchPetButton.HotKey:Hide()
 	PetBattleFrame.BottomFrame.CatchButton.HotKey:Hide()
 
