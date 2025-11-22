@@ -43,12 +43,9 @@ function A:OnEnable()
 		In this case, not all elements that need to be adjusted exist yet,
 		and it may overwrite changes that have already been made.
 	]]
-	local BlizzardPetBattleFrame_Display = PetBattleFrame_Display
-	function PetBattleFrame_Display(petBattleFrame)
-		BlizzardPetBattleFrame_Display(petBattleFrame)
-
+	hooksecurefunc("PetBattleFrame_Display", function(petBattleFrame)
 		A:PetBattleFrameSetStyle()
-	end
+	end)
 
 	------------------
 	-- 	Options
