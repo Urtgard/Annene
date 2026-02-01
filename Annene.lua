@@ -99,8 +99,8 @@ function A:OnEnable()
 			else
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 			end
-			GameTooltip:SetText(SWITCH_PET, 1, 1, 1, true)
-			GameTooltip:AddLine(SWITCH_PET_DESCRIPTION, nil, nil, nil, true)
+			GameTooltip_SetTitle(GameTooltip, SWITCH_PET)
+			GameTooltip_AddNormalLine(GameTooltip, SWITCH_PET_DESCRIPTION);
 			GameTooltip:Show()
 		end
 	)
@@ -114,10 +114,10 @@ function A:OnEnable()
 			else
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 			end
-			GameTooltip:SetText(self.name, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true)
-			GameTooltip:AddLine(self.description, nil, nil, nil, true)
+			GameTooltip_SetTitle(GameTooltip, self.name)
+			GameTooltip_AddNormalLine(GameTooltip, self.description)
 			if self.additionalText then
-				GameTooltip:AddLine(self.additionalText, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, true)
+				GameTooltip_AddErrorLine(GameTooltip, self.additionalText)
 			end
 			GameTooltip:Show()
 		end
@@ -132,8 +132,8 @@ function A:OnEnable()
 			else
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 			end
-			GameTooltip:SetText(PET_BATTLE_FORFEIT, 1, 1, 1, true)
-			GameTooltip:AddLine(PET_BATTLE_FORFEIT_DESCRIPTION, nil, nil, nil, true)
+			GameTooltip_SetTitle(GameTooltip, PET_BATTLE_FORFEIT)
+			GameTooltip_AddNormalLine(GameTooltip, PET_BATTLE_FORFEIT_DESCRIPTION)
 			GameTooltip:Show()
 		end
 	)
